@@ -1,4 +1,4 @@
-package main
+package brokerfactory
 
 import (
 	"context"
@@ -12,17 +12,17 @@ import (
 
 type symbolValidationFunc func(ctx context.Context, symbol string) error
 
-type BrokerSymbolValidator struct {
+type SymbolValidator struct {
 	validateByBrokerType map[broker.AccountType]symbolValidationFunc
 }
 
-type NewBrokerSymbolValidatorInput struct {
+type NewSymbolValidatorInput struct {
 	TastyTradeClientFactory        tastytrade.ClientFactory
 	TastyTradeSandboxClientFactory tastytrade.ClientFactory
 }
 
-func NewBrokerSymbolValidator(input NewBrokerSymbolValidatorInput) *BrokerSymbolValidator {
-	return &BrokerSymbolValidator{
+func NewSymbolValidator(input NewSymbolValidatorInput) *SymbolValidator {
+	return &SymbolValidator{
 		validateByBrokerType: map[broker.AccountType]symbolValidationFunc{
 			broker.AccountTypeTastyTrade: func(ctx context.Context, symbol string) error {
 				return validateTastyTradeEquitySymbol(ctx, input.TastyTradeClientFactory.Create(), symbol)
@@ -34,7 +34,7 @@ func NewBrokerSymbolValidator(input NewBrokerSymbolValidatorInput) *BrokerSymbol
 	}
 }
 
-func (validator *BrokerSymbolValidator) Validate(ctx context.Context, brokerType string, symbol string) error {
+func (validator *SymbolValidator) Validate(ctx context.Context, brokerType string, symbol string) error {
 	validateSymbol, ok := validator.validateByBrokerType[broker.AccountType(brokerType)]
 	if !ok {
 		return symbolvalidator.ErrUnsupportedBrokerForSymbolValidation

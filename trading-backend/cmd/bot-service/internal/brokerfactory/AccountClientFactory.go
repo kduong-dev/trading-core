@@ -1,4 +1,4 @@
-package main
+package brokerfactory
 
 import (
 	"context"
@@ -7,12 +7,12 @@ import (
 	"github.com/kduong/trading-backend/internal/broker/tastytrade"
 )
 
-type BrokerAccountClientFactory struct {
+type AccountClientFactory struct {
 	TastyTradeClientFactory        tastytrade.ClientFactory
 	TastyTradeSandboxClientFactory tastytrade.ClientFactory
 }
 
-func (factory *BrokerAccountClientFactory) Get(ctx context.Context, account *broker.Account) broker.AccountClient {
+func (factory *AccountClientFactory) Get(ctx context.Context, account *broker.Account) broker.AccountClient {
 	switch account.Type {
 	case broker.AccountTypeTastyTrade:
 		return broker.NewTastyTradeAccountAdapter(broker.NewTastyTradeAccountAdapterInput{
