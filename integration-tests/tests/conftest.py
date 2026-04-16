@@ -1,4 +1,5 @@
 import os
+import uuid
 from dataclasses import dataclass
 
 import pytest
@@ -70,3 +71,46 @@ def request_api(settings: ServiceSettings, http_session: requests.Session):
         return http_session.request(method=method, url=url, timeout=timeout, **kwargs)
 
     return _request
+
+
+@pytest.fixture(scope="session")
+def auth_token(require_live, settings, http_session):
+    """Creates a test user and session once per suite. Returns the Bearer token."""
+    email = f"it-{uuid.uuid4().hex[:8]}@example.com"
+    password = "integration-test-pass-123"
+    auth_url = settings.auth_url.rstrip("/")
+    timeout = settings.timeout_seconds
+
+    resp = http_session.post(
+        f"{auth_url}/auth/v1/users",
+        json={"email": email, "password": password},
+        timeout=timeout,
+    )
+    assert resp.status_code == 200, f"create user failed: {resp.text}"
+
+    resp = http_session.post(
+        f"{auth_url}/auth/v1/sessions",
+        json={"email": email, "password": password},
+        timeout=timeout,
+    )
+    assert resp.status_code == 200, f"create session failed: {resp.text}"
+    return resp.json()["access_token"]
+
+
+@pytest.fixture(scope="session")
+def auth_headers(auth_token):
+    return {"Authorization": f"Bearer {auth_token}"}
+
+
+@pytest.fixture(scope="session")
+def account_id(require_live, settings, http_session, auth_headers):
+    """Creates a test account once per suite. Returns the account_id."""
+    account_url = settings.account_url.rstrip("/")
+    resp = http_session.post(
+        f"{account_url}/accounts/v1/accounts",
+        json={"account_name": "Integration Test Account"},
+        headers=auth_headers,
+        timeout=settings.timeout_seconds,
+    )
+    assert resp.status_code == 201, f"create account failed: {resp.text}"
+    return resp.json()["account_id"]

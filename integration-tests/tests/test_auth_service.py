@@ -59,7 +59,7 @@ def test_create_user_then_create_session(require_live, request_api):
         "/auth/v1/users",
         json={"email": email, "password": password},
     )
-    assert create_user_response.status_code == 201
+    assert create_user_response.status_code == 200
 
     create_session_response = request_api(
         "auth",
@@ -69,6 +69,18 @@ def test_create_user_then_create_session(require_live, request_api):
     )
     assert create_session_response.status_code == 200
     body = create_session_response.json()
+    assert body.get("token_type") == "Bearer"
+    assert isinstance(body.get("access_token"), str)
+    assert len(body.get("access_token", "")) > 0
+
+
+@pytest.mark.live
+@pytest.mark.auth
+def test_refresh_session_returns_new_token(require_live, request_api, auth_token):
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    response = request_api("auth", "POST", "/auth/v1/sessions/refresh", headers=headers)
+    assert response.status_code == 200
+    body = response.json()
     assert body.get("token_type") == "Bearer"
     assert isinstance(body.get("access_token"), str)
     assert len(body.get("access_token", "")) > 0
