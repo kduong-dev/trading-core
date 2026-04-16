@@ -19,6 +19,9 @@ class ServiceSettings:
     auth_url: str
     account_url: str
     stock_url: str
+    bot_url: str
+    reporting_url: str
+    storage_url: str
     timeout_seconds: float
 
 
@@ -28,6 +31,9 @@ def settings() -> ServiceSettings:
         auth_url=os.getenv("AUTH_SERVICE_URL", "http://localhost:9100"),
         account_url=os.getenv("ACCOUNT_SERVICE_URL", "http://localhost:9000"),
         stock_url=os.getenv("STOCK_SCREENER_URL", "http://localhost:8080"),
+        bot_url=os.getenv("BOT_SERVICE_URL", "http://localhost:8081"),
+        reporting_url=os.getenv("REPORTING_SERVICE_URL", "http://localhost:8082"),
+        storage_url=os.getenv("STORAGE_SERVICE_URL", "http://localhost:8083"),
         timeout_seconds=float(os.getenv("TEST_TIMEOUT_SECONDS", "10")),
     )
 
@@ -52,6 +58,9 @@ def request_api(settings: ServiceSettings, http_session: requests.Session):
         "auth": settings.auth_url,
         "account": settings.account_url,
         "stock": settings.stock_url,
+        "bot": settings.bot_url,
+        "reporting": settings.reporting_url,
+        "storage": settings.storage_url,
     }
 
     def _request(service: str, method: str, path: str, **kwargs):

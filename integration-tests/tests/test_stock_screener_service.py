@@ -48,3 +48,24 @@ def test_most_actives_happy_path(require_live, request_api):
         params={"limit": 1},
     )
     assert response.status_code == 200
+
+
+@pytest.mark.live
+@pytest.mark.stock
+def test_fear_greed_requires_authorization_header(require_live, request_api):
+    response = request_api("stock", "GET", "/stock-screener/v1/sentiments/fear-greed")
+    assert response.status_code == 401
+
+
+@pytest.mark.live
+@pytest.mark.stock
+def test_stock_bars_requires_authorization_header(require_live, request_api):
+    response = request_api("stock", "GET", "/stock-screener/v1/stocks/AAPL/bars")
+    assert response.status_code == 401
+
+
+@pytest.mark.live
+@pytest.mark.stock
+def test_stock_snapshot_requires_authorization_header(require_live, request_api):
+    response = request_api("stock", "GET", "/stock-screener/v1/stocks/AAPL/snapshot")
+    assert response.status_code == 401
