@@ -10,28 +10,28 @@ _FAKE_REPORT_ID = str(uuid.uuid4())
 @pytest.mark.live
 @pytest.mark.reporting
 def test_enqueue_report_requires_authorization_header(require_live, request_api):
-    response = request_api("reporting", "POST", "/reports/v1/reports", json={})
+    response = request_api("reporting", "POST", "/reports/v1/jobs", json={})
     assert response.status_code == 401
 
 
 @pytest.mark.live
 @pytest.mark.reporting
 def test_list_reports_requires_authorization_header(require_live, request_api):
-    response = request_api("reporting", "GET", "/reports/v1/reports")
+    response = request_api("reporting", "GET", "/reports/v1/jobs")
     assert response.status_code == 401
 
 
 @pytest.mark.live
 @pytest.mark.reporting
 def test_get_report_requires_authorization_header(require_live, request_api):
-    response = request_api("reporting", "GET", f"/reports/v1/reports/{_FAKE_REPORT_ID}")
+    response = request_api("reporting", "GET", f"/reports/v1/jobs/{_FAKE_REPORT_ID}")
     assert response.status_code == 401
 
 
 @pytest.mark.live
 @pytest.mark.reporting
 def test_download_report_requires_authorization_header(require_live, request_api):
-    response = request_api("reporting", "GET", f"/reports/v1/reports/{_FAKE_REPORT_ID}/download")
+    response = request_api("reporting", "GET", f"/reports/v1/jobs/{_FAKE_REPORT_ID}/download")
     assert response.status_code == 401
 
 
@@ -39,7 +39,7 @@ def test_download_report_requires_authorization_header(require_live, request_api
 @pytest.mark.reporting
 def test_enqueue_report_rejects_invalid_token(require_live, request_api):
     headers = {"Authorization": "Bearer not-a-real-token"}
-    response = request_api("reporting", "POST", "/reports/v1/reports", json={}, headers=headers)
+    response = request_api("reporting", "POST", "/reports/v1/jobs", json={}, headers=headers)
     assert response.status_code == 401
 
 
@@ -48,7 +48,7 @@ def test_enqueue_report_rejects_invalid_token(require_live, request_api):
 @pytest.mark.live
 @pytest.mark.reporting
 def test_enqueue_report_rejects_missing_kind(require_live, request_api, auth_headers):
-    response = request_api("reporting", "POST", "/reports/v1/reports", json={}, headers=auth_headers)
+    response = request_api("reporting", "POST", "/reports/v1/jobs", json={}, headers=auth_headers)
     assert response.status_code == 400
 
 
@@ -56,7 +56,7 @@ def test_enqueue_report_rejects_missing_kind(require_live, request_api, auth_hea
 @pytest.mark.reporting
 def test_list_reports_rejects_invalid_page_size(require_live, request_api, auth_headers):
     response = request_api(
-        "reporting", "GET", "/reports/v1/reports",
+        "reporting", "GET", "/reports/v1/jobs",
         params={"page_size": 0},
         headers=auth_headers,
     )
@@ -67,7 +67,7 @@ def test_list_reports_rejects_invalid_page_size(require_live, request_api, auth_
 @pytest.mark.reporting
 def test_list_reports_rejects_negative_page(require_live, request_api, auth_headers):
     response = request_api(
-        "reporting", "GET", "/reports/v1/reports",
+        "reporting", "GET", "/reports/v1/jobs",
         params={"page": -1},
         headers=auth_headers,
     )
@@ -82,7 +82,7 @@ def enqueued_report(request_api, auth_headers, require_live, settings):
     import requests as req
     reporting_url = settings.reporting_url.rstrip("/")
     resp = req.Session().post(
-        f"{reporting_url}/reports/v1/reports",
+        f"{reporting_url}/reports/v1/jobs",
         json={"kind": "backtest", "name": "Integration Test Report"},
         headers=auth_headers,
         timeout=settings.timeout_seconds,
@@ -95,7 +95,7 @@ def enqueued_report(request_api, auth_headers, require_live, settings):
 @pytest.mark.reporting
 def test_enqueue_report(require_live, request_api, auth_headers):
     response = request_api(
-        "reporting", "POST", "/reports/v1/reports",
+        "reporting", "POST", "/reports/v1/jobs",
         json={"kind": "backtest", "name": "Test Report"},
         headers=auth_headers,
     )
@@ -109,7 +109,7 @@ def test_enqueue_report(require_live, request_api, auth_headers):
 @pytest.mark.live
 @pytest.mark.reporting
 def test_list_reports(require_live, request_api, auth_headers, enqueued_report):
-    response = request_api("reporting", "GET", "/reports/v1/reports", headers=auth_headers)
+    response = request_api("reporting", "GET", "/reports/v1/jobs", headers=auth_headers)
     assert response.status_code == 200
     body = response.json()
     assert isinstance(body, list)
@@ -121,7 +121,7 @@ def test_list_reports(require_live, request_api, auth_headers, enqueued_report):
 @pytest.mark.reporting
 def test_get_report(require_live, request_api, auth_headers, enqueued_report):
     report_id = enqueued_report["id"]
-    response = request_api("reporting", "GET", f"/reports/v1/reports/{report_id}", headers=auth_headers)
+    response = request_api("reporting", "GET", f"/reports/v1/jobs/{report_id}", headers=auth_headers)
     assert response.status_code == 200
     body = response.json()
     assert body.get("id") == report_id
@@ -131,7 +131,7 @@ def test_get_report(require_live, request_api, auth_headers, enqueued_report):
 @pytest.mark.live
 @pytest.mark.reporting
 def test_get_report_not_found(require_live, request_api, auth_headers):
-    response = request_api("reporting", "GET", f"/reports/v1/reports/{_FAKE_REPORT_ID}", headers=auth_headers)
+    response = request_api("reporting", "GET", f"/reports/v1/jobs/{_FAKE_REPORT_ID}", headers=auth_headers)
     assert response.status_code == 404
 
 
@@ -140,5 +140,5 @@ def test_get_report_not_found(require_live, request_api, auth_headers):
 def test_download_report_conflicts_when_pending(require_live, request_api, auth_headers, enqueued_report):
     # Report is still pending — download should fail with 409.
     report_id = enqueued_report["id"]
-    response = request_api("reporting", "GET", f"/reports/v1/reports/{report_id}/download", headers=auth_headers)
+    response = request_api("reporting", "GET", f"/reports/v1/jobs/{report_id}/download", headers=auth_headers)
     assert response.status_code == 409
