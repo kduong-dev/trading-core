@@ -23,6 +23,7 @@ class ServiceSettings:
     bot_url: str
     reporting_url: str
     storage_url: str
+    journal_url: str
     timeout_seconds: float
 
 
@@ -35,6 +36,7 @@ def settings() -> ServiceSettings:
         bot_url=os.getenv("BOT_SERVICE_URL", "http://localhost:8081"),
         reporting_url=os.getenv("REPORTING_SERVICE_URL", "http://localhost:8082"),
         storage_url=os.getenv("STORAGE_SERVICE_URL", "http://localhost:8083"),
+        journal_url=os.getenv("JOURNAL_SERVICE_URL", "http://localhost:8084"),
         timeout_seconds=float(os.getenv("TEST_TIMEOUT_SECONDS", "10")),
     )
 
@@ -62,6 +64,7 @@ def request_api(settings: ServiceSettings, http_session: requests.Session):
         "bot": settings.bot_url,
         "reporting": settings.reporting_url,
         "storage": settings.storage_url,
+        "journal": settings.journal_url,
     }
 
     def _request(service: str, method: str, path: str, **kwargs):

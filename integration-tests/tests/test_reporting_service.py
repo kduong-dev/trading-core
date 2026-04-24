@@ -1,6 +1,7 @@
 import uuid
 
 import pytest
+import requests as req
 
 _FAKE_REPORT_ID = str(uuid.uuid4())
 
@@ -79,7 +80,6 @@ def test_list_reports_rejects_negative_page(require_live, request_api, auth_head
 @pytest.fixture(scope="module")
 def enqueued_report(request_api, auth_headers, require_live, settings):
     """Enqueues a report once per module and returns the report body."""
-    import requests as req
     reporting_url = settings.reporting_url.rstrip("/")
     resp = req.Session().post(
         f"{reporting_url}/reports/v1/jobs",

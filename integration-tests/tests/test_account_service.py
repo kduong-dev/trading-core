@@ -125,3 +125,76 @@ def test_get_balance_requires_linked_broker(require_live, request_api, auth_head
     # Account exists but has no broker linked — expect 400.
     response = request_api("account", "GET", f"/accounts/v1/accounts/{account_id}/balances", headers=auth_headers)
     assert response.status_code == 400
+
+
+# --- daily PnL endpoint ---
+
+@pytest.mark.live
+@pytest.mark.account
+def test_get_daily_pnl_requires_authorization_header(require_live, request_api):
+    response = request_api(
+        "account", "GET",
+        f"/accounts/v1/accounts/{_FAKE_ACCOUNT_ID}/pnl/daily",
+        params={"from": "2026-04-01", "to": "2026-04-30"},
+    )
+    assert response.status_code == 401
+
+
+@pytest.mark.live
+@pytest.mark.account
+def test_get_daily_pnl_requires_from_and_to(require_live, request_api, auth_headers, account_id):
+    response = request_api(
+        "account", "GET",
+        f"/accounts/v1/accounts/{account_id}/pnl/daily",
+        headers=auth_headers,
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.live
+@pytest.mark.account
+def test_get_daily_pnl_rejects_invalid_from(require_live, request_api, auth_headers, account_id):
+    response = request_api(
+        "account", "GET",
+        f"/accounts/v1/accounts/{account_id}/pnl/daily",
+        params={"from": "nope", "to": "2026-04-30"},
+        headers=auth_headers,
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.live
+@pytest.mark.account
+def test_get_daily_pnl_rejects_inverted_range(require_live, request_api, auth_headers, account_id):
+    response = request_api(
+        "account", "GET",
+        f"/accounts/v1/accounts/{account_id}/pnl/daily",
+        params={"from": "2026-04-30", "to": "2026-04-01"},
+        headers=auth_headers,
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.live
+@pytest.mark.account
+def test_get_daily_pnl_rejects_range_over_max(require_live, request_api, auth_headers, account_id):
+    response = request_api(
+        "account", "GET",
+        f"/accounts/v1/accounts/{account_id}/pnl/daily",
+        params={"from": "2024-01-01", "to": "2026-12-31"},
+        headers=auth_headers,
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.live
+@pytest.mark.account
+def test_get_daily_pnl_requires_linked_broker(require_live, request_api, auth_headers, account_id):
+    # Account exists but has no broker linked — expect 400.
+    response = request_api(
+        "account", "GET",
+        f"/accounts/v1/accounts/{account_id}/pnl/daily",
+        params={"from": "2026-04-01", "to": "2026-04-30"},
+        headers=auth_headers,
+    )
+    assert response.status_code == 400
