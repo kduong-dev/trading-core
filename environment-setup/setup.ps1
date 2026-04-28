@@ -41,6 +41,20 @@ if (-not (Have "ansible-playbook")) {
 
 # --- frontend deps --------------------------------------------------------
 $root = Resolve-Path "$PSScriptRoot\.."
+
+# --- sibling repos --------------------------------------------------------
+$org = "https://github.com/trading-core"
+$repos = @("trading-backend", "trading-frontend", "trading-formation", "integration-tests")
+foreach ($r in $repos) {
+    $dest = Join-Path $root $r
+    if (Test-Path (Join-Path $dest ".git")) {
+        Write-Host "[ok]   $r already cloned"
+    } else {
+        Write-Host "[clone] $org/$r"
+        git clone "$org/$r.git" $dest
+    }
+}
+
 $frontend = Join-Path $root "trading-frontend"
 if (Test-Path (Join-Path $frontend "package.json")) {
     Write-Host "[npm] installing frontend deps"

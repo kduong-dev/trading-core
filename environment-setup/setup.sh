@@ -53,6 +53,17 @@ fi
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
+# --- sibling repos --------------------------------------------------------
+ORG="https://github.com/trading-core"
+for r in trading-backend trading-frontend trading-formation integration-tests; do
+    if [[ -d "$ROOT/$r/.git" ]]; then
+        echo "[ok]   $r already cloned"
+    else
+        echo "[clone] $ORG/$r"
+        git clone "$ORG/$r.git" "$ROOT/$r"
+    fi
+done
+
 # --- frontend deps --------------------------------------------------------
 if [[ -f "$ROOT/trading-frontend/package.json" ]]; then
     echo "[npm] installing frontend deps"

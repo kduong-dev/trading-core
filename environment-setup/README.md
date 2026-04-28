@@ -1,7 +1,8 @@
 # environment-setup
 
 One-shot installer for everything `trading-core` needs: Docker, Go, Node.js,
-Python, GNU Make, Ansible, and the per-service deps (`npm install`, `pip
+Python, GNU Make, Ansible, the sibling repos (cloned from
+`github.com/trading-core`), and the per-service deps (`npm install`, `pip
 install -e`, `go mod download`).
 
 ## Usage
