@@ -2,7 +2,7 @@
 # Installs all dependencies needed to run the trading-core stack.
 # Supports Linux (apt-get) and macOS (Homebrew). Windows users: run inside WSL 2.
 
-set -euo pipefail
+#set -euo pipefail
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
@@ -46,13 +46,13 @@ else
     install docker docker.io
     install go golang-go
     install node nodejs npm
-    install python3 python3 python3-pip python3-venv
+    install python3 python3 python3-pip python3-venv python3.12-venv python3-full
     install make make
     install ansible-playbook ansible
     install git git
 fi
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # --- sibling repos --------------------------------------------------------
 ORG="https://github.com/trading-core"
@@ -74,7 +74,7 @@ fi
 # --- integration-tests deps ----------------------------------------------
 if [[ -f "$ROOT/integration-tests/pyproject.toml" ]]; then
     echo "[pip] installing integration-tests deps"
-    (cd "$ROOT/integration-tests" && python3 -m pip install --user -e .)
+    (cd "$ROOT/integration-tests" && python3 -m venv .venv && .venv/bin/pip install -e .)
 fi
 
 # --- backend deps ---------------------------------------------------------
