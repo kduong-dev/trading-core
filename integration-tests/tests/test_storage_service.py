@@ -46,7 +46,7 @@ def test_initialise_upload_rejects_invalid_token(require_live, request_api):
 
 @pytest.mark.live
 @pytest.mark.storage
-def test_initialise_upload_rejects_missing_filename(require_live, request_api, auth_headers):
+def test_initialise_upload_rejects_missing_key(require_live, request_api, auth_headers):
     response = request_api("storage", "POST", "/storage/v1/uploads", json={}, headers=auth_headers)
     assert response.status_code == 400
 
@@ -81,7 +81,7 @@ def completed_upload(request_api, auth_headers, require_live, settings):
     # Step 1: initialise upload
     resp = session.post(
         f"{storage_url}/storage/v1/uploads",
-        json={"filename": "integration-test.txt", "content_type": "text/plain"},
+        json={"key": "integration-test.txt", "content_type": "text/plain"},
         headers=auth_headers,
         timeout=settings.timeout_seconds,
     )
@@ -114,7 +114,7 @@ def completed_upload(request_api, auth_headers, require_live, settings):
 def test_initialise_upload(require_live, request_api, auth_headers):
     response = request_api(
         "storage", "POST", "/storage/v1/uploads",
-        json={"filename": "test.txt", "content_type": "text/plain"},
+        json={"key": "test.txt", "content_type": "text/plain"},
         headers=auth_headers,
     )
     assert response.status_code == 201
@@ -133,7 +133,7 @@ def test_upload_part(require_live, request_api, auth_headers, settings):
     # Need a fresh upload for this test
     resp = session.post(
         f"{storage_url}/storage/v1/uploads",
-        json={"filename": "part-test.txt", "content_type": "text/plain"},
+        json={"key": "part-test.txt", "content_type": "text/plain"},
         headers=auth_headers,
         timeout=settings.timeout_seconds,
     )
