@@ -5,21 +5,44 @@ Python, GNU Make, Ansible, the sibling repos (cloned from
 `github.com/trading-core`), and the per-service deps (`npm install`, `pip
 install -e`, `go mod download`).
 
+> **Primary target: Linux (Debian/Ubuntu).** Windows and macOS users should
+> read the platform notes below before running.
+
 ## Usage
-
-**Windows** (run an elevated PowerShell so winget can install machine-wide):
-
-```powershell
-.\setup.ps1
-```
-
-**Linux / macOS**:
 
 ```bash
 ./setup.sh
 ```
 
-The scripts are idempotent — re-running them only installs what's missing.
+The script is idempotent — re-running it only installs what's missing.
+
+### Windows
+
+Use [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install) with an
+Ubuntu distro, then run `setup.sh` inside the WSL terminal. Docker Desktop with
+the WSL 2 backend is the recommended way to run the compose stack on Windows.
+
+```powershell
+# one-time WSL setup (elevated PowerShell)
+wsl --install -d Ubuntu
+```
+
+Then inside the WSL shell:
+
+```bash
+./setup.sh
+```
+
+### macOS
+
+[Homebrew](https://brew.sh) is required. Install it first if you don't have it,
+then run the script — it detects `brew` automatically and uses it instead of
+`apt-get`.
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+./setup.sh
+```
 
 ## What gets installed
 
@@ -33,10 +56,7 @@ The scripts are idempotent — re-running them only installs what's missing.
 | GNU Make | proxy-mode targets (`make run-<svc>`) |
 | Git | repo operations |
 
-Package sources:
-- Windows → `winget` (Docker Desktop, Go, Node LTS, Python 3.12, ezwinports.make, Git) + `pipx` for Ansible
-- macOS → Homebrew
-- Linux → `apt-get` (Debian/Ubuntu)
+Package source: `apt-get` (Debian/Ubuntu).
 
 ## After setup
 

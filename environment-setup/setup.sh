@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Installs all dependencies needed to run the trading-core stack on Linux/macOS.
-# Picks the right package manager (apt or brew) automatically.
+# Installs all dependencies needed to run the trading-core stack.
+# Supports Linux (apt-get) and macOS (Homebrew). Windows users: run inside WSL 2.
 
 set -euo pipefail
 
@@ -15,6 +15,7 @@ elif have apt-get; then
     $SUDO apt-get update
 else
     echo "Unsupported platform — install deps manually (docker, go, node, python3, make, ansible)."
+    echo "Windows users: run this script inside a WSL 2 Ubuntu shell."
     exit 1
 fi
 
