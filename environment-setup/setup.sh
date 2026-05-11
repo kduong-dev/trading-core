@@ -42,6 +42,7 @@ if [[ "$PM" == "brew" ]]; then
     install make make
     install ansible-playbook ansible
     install git git
+    install gh gh
 else
     install docker docker.io
     install go golang-go
@@ -50,18 +51,22 @@ else
     install make make
     install ansible-playbook ansible
     install git git
+    install gh gh
 fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # --- sibling repos --------------------------------------------------------
-ORG="https://github.com/trading-core"
-for r in trading-backend trading-frontend trading-formation integration-tests; do
+ORG="trading-core"
+echo "[repos] fetching repo list for $ORG"
+mapfile -t REPOS < <(gh repo list "$ORG" --json name --jq '.[].name' --limit 200)
+
+for r in "${REPOS[@]}"; do
     if [[ -d "$ROOT/$r/.git" ]]; then
         echo "[ok]   $r already cloned"
     else
         echo "[clone] $ORG/$r"
-        git clone "$ORG/$r.git" "$ROOT/$r"
+        git clone "https://github.com/$ORG/$r.git" "$ROOT/$r"
     fi
 done
 
