@@ -42,19 +42,26 @@ def test_initialise_upload_rejects_invalid_token(require_live, request_api):
     assert response.status_code == 401
 
 
+@pytest.mark.live
+@pytest.mark.storage
+def test_initialise_upload_rejects_user_token(require_live, request_api, auth_headers):
+    response = request_api("storage", "POST", "/storage/v1/uploads", json={}, headers=auth_headers)
+    assert response.status_code == 401
+
+
 # --- validation tests ---
 
 @pytest.mark.live
 @pytest.mark.storage
-def test_initialise_upload_rejects_missing_key(require_live, request_api, auth_headers):
-    response = request_api("storage", "POST", "/storage/v1/uploads", json={}, headers=auth_headers)
+def test_initialise_upload_rejects_missing_key(require_live, request_api, storage_auth_headers):
+    response = request_api("storage", "POST", "/storage/v1/uploads", json={}, headers=storage_auth_headers)
     assert response.status_code == 400
 
 
 @pytest.mark.live
 @pytest.mark.storage
-def test_download_file_not_found(require_live, request_api, auth_headers):
-    response = request_api("storage", "GET", f"/storage/v1/files/{_FAKE_FILE_ID}", headers=auth_headers)
+def test_download_file_not_found(require_live, request_api, storage_auth_headers):
+    response = request_api("storage", "GET", f"/storage/v1/files/{_FAKE_FILE_ID}", headers=storage_auth_headers)
     assert response.status_code == 404
 
 

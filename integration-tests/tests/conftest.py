@@ -106,6 +106,15 @@ def auth_headers(auth_token):
 
 
 @pytest.fixture(scope="session")
+def storage_auth_headers(require_live):
+    """storage-service authenticates calling services by API key, not user tokens."""
+    api_key = os.getenv("STORAGE_SERVICE_API_KEY")
+    if not api_key:
+        pytest.skip("STORAGE_SERVICE_API_KEY is not set.")
+    return {"Authorization": f"Bearer {api_key}"}
+
+
+@pytest.fixture(scope="session")
 def account_id(require_live, settings, http_session, auth_headers):
     """Creates a test account once per suite. Returns the account_id."""
     account_url = settings.account_url.rstrip("/")
