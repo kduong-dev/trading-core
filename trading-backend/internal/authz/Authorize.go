@@ -15,18 +15,14 @@ import (
 // Scope identifiers. Tokens advertise these via the OAuth2 `scope` claim and
 // handlers require a specific one before servicing a request.
 const (
-	ScopeFilesRead  = "files:read"
-	ScopeFilesWrite = "files:write"
-	ScopeJobsRead   = "jobs:read"
-	ScopeJobsWrite  = "jobs:write"
+	ScopeJobsRead  = "jobs:read"
+	ScopeJobsWrite = "jobs:write"
 )
 
 // UserScopes is the scope set granted to a human user's session token. It
 // represents the union of operations a user may perform directly; narrower
 // service-minted tokens restrict to a single scope per operation.
 var UserScopes = []string{
-	ScopeFilesRead,
-	ScopeFilesWrite,
 	ScopeJobsRead,
 	ScopeJobsWrite,
 }

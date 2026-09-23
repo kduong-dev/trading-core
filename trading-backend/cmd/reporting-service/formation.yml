@@ -6,7 +6,7 @@
     cmd_dir: cmd/reporting-service
     env_dest: backend/reporting-service/.env
     resources:
-      secrets: [token, alpaca]
+      secrets: [token, alpaca, storage_service_api_key]
       apis:    [alpaca]
       logs:    [reporting_event_log]
       clients: [storage_service]

@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong/trading-backend/cmd/storage-service/pkg/storageservice"
-	"github.com/kduong/trading-backend/internal/auth"
 	"github.com/kduong/trading-backend/internal/eventsource"
 	"github.com/kduong/trading-backend/internal/eventsource/subscription"
 	"github.com/kduong/trading-backend/internal/fatal"
@@ -19,7 +18,6 @@ const MaxRetries = 3
 type Actor struct {
 	jobStoreCommandHandler jobstore.CommandHandler
 	storageClient          storageservice.Client
-	serviceTokenMinter     *auth.ServiceTokenMinter
 	outputsDirectory       string
 	jobs                   chan *jobstore.Job
 	log                    eventsource.Log
@@ -27,18 +25,16 @@ type Actor struct {
 }
 
 type NewActorInput struct {
-	CommandHandler     jobstore.CommandHandler
-	StorageClient      storageservice.Client
-	ServiceTokenMinter *auth.ServiceTokenMinter
-	OutputsDirectory   string
-	Log                eventsource.Log
+	CommandHandler   jobstore.CommandHandler
+	StorageClient    storageservice.Client
+	OutputsDirectory string
+	Log              eventsource.Log
 }
 
 func NewActor(input NewActorInput) *Actor {
 	return &Actor{
 		jobStoreCommandHandler: input.CommandHandler,
 		storageClient:          input.StorageClient,
-		serviceTokenMinter:     input.ServiceTokenMinter,
 		outputsDirectory:       input.OutputsDirectory,
 		jobs:                   make(chan *jobstore.Job, 64),
 		log:                    input.Log,

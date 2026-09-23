@@ -9,16 +9,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong/trading-backend/cmd/storage-service/pkg/storageservice"
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/authz"
 	"github.com/kduong/trading-backend/internal/backtest/backtest"
 	"github.com/kduong/trading-backend/internal/backtest/backtestconfig"
 	"github.com/kduong/trading-backend/internal/backtest/chart"
 	"github.com/kduong/trading-backend/internal/backtest/indicator"
 	"github.com/kduong/trading-backend/internal/backtest/replay"
-	"github.com/kduong/trading-backend/internal/contextx"
 	"github.com/kduong/trading-backend/internal/tradingstrategy"
 )
 
@@ -63,7 +60,7 @@ func (actor *Actor) runBacktest(ctx context.Context, job *jobstore.Job) (downloa
 	if err = writeOutputs(cfg, result, loaded, outputDir); err != nil {
 		return
 	}
-	file, err := actor.uploadReport(ctx, job.UserID, job.ID, outputDir)
+	file, err := actor.uploadReport(ctx, job.ID, outputDir)
 	if err != nil {
 		err = fmt.Errorf("uploading report to storage: %w", err)
 		return
@@ -72,17 +69,7 @@ func (actor *Actor) runBacktest(ctx context.Context, job *jobstore.Job) (downloa
 	return
 }
 
-func (actor *Actor) uploadReport(ctx context.Context, userID string, jobID string, outputDir string) (*storageservice.File, error) {
-	token, err := actor.serviceTokenMinter.MintToken(auth.MintTokenInput{
-		OnBehalfOfUserID: userID,
-		Actor:            auth.ActorReportingService,
-		Scopes:           []string{authz.ScopeFilesWrite},
-		Audience:         []string{auth.AudienceStorageService},
-	})
-	if err != nil {
-		return nil, fmt.Errorf("minting service token: %w", err)
-	}
-	ctx = contextx.WithAccessToken(ctx, token)
+func (actor *Actor) uploadReport(ctx context.Context, jobID string, outputDir string) (*storageservice.File, error) {
 	htmlPath := fmt.Sprintf("%s/report.html", outputDir)
 	htmlData, err := os.ReadFile(htmlPath)
 	if err != nil {

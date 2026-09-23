@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -9,9 +8,7 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong/trading-backend/internal/auth"
 	"github.com/kduong/trading-backend/internal/authz"
-	"github.com/kduong/trading-backend/internal/contextx"
 	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
@@ -43,17 +40,8 @@ func (handler *Handler) DownloadJob(responseWriter http.ResponseWriter, request 
 		err = merry.New("job has no file attached").WithHTTPCode(http.StatusNotFound)
 		return
 	}
-	token, err := handler.serviceTokenMinter.MintToken(auth.MintTokenInput{
-		OnBehalfOfUserID: contextx.GetUserID(ctx),
-		Actor:            auth.ActorReportingService,
-		Scopes:           []string{authz.ScopeFilesRead},
-		Audience:         []string{auth.AudienceStorageService},
-	})
-	if err != nil {
-		err = fmt.Errorf("minting service token: %w", err)
-		return
-	}
-	ctx = contextx.WithAccessToken(ctx, token)
+	// jobQueryHandler.Get has already enforced that the caller owns this job;
+	// storage-service only knows about trading-core as a whole.
 	download, err := handler.storageClient.DownloadFile(ctx, fileID)
 	if err != nil {
 		return

@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/httpapi"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobsync"
-	"github.com/kduong/trading-backend/cmd/storage-service/pkg/storageservice"
 	"github.com/kduong/trading-backend/internal/auth"
 	"github.com/kduong/trading-backend/internal/config"
 	"github.com/kduong/trading-backend/internal/eventsource"
@@ -36,24 +36,21 @@ func main() {
 		}),
 	})
 	storageClient := storageservice.ClientFromEnv()
-	serviceTokenMinter := auth.ServiceTokenMinterFromEnv()
 	actor := jobsync.NewActor(jobsync.NewActorInput{
-		CommandHandler:     commandHandler,
-		StorageClient:      storageClient,
-		ServiceTokenMinter: serviceTokenMinter,
-		OutputsDirectory:   outputsDirectory,
-		Log:                log,
+		CommandHandler:   commandHandler,
+		StorageClient:    storageClient,
+		OutputsDirectory: outputsDirectory,
+		Log:              log,
 	})
 	actor.CatchUp(ctx)
 	actor.CompleteCatchup(ctx)
 	go actor.Run(ctx)
 	router := httpapi.NewRouter(httpapi.NewRouterInput{
-		AuthMiddleware:     auth.MiddlewareFromEnv(auth.AudienceReportingService),
-		JobCommandHandler:  commandHandler,
-		JobQueryHandler:    queryHandler,
-		StorageClient:      storageClient,
-		ServiceTokenMinter: serviceTokenMinter,
-		EnqueueJob:         actor.Notify,
+		AuthMiddleware:    auth.MiddlewareFromEnv(auth.AudienceReportingService),
+		JobCommandHandler: commandHandler,
+		JobQueryHandler:   queryHandler,
+		StorageClient:     storageClient,
+		EnqueueJob:        actor.Notify,
 	})
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},

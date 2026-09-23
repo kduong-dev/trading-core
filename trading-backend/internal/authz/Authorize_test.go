@@ -13,15 +13,15 @@ import (
 
 func TestRequireScope(t *testing.T) {
 	Convey("Given a context with scopes", t, func() {
-		ctx := contextx.WithScopes(context.Background(), []string{"files:read", "jobs:read"})
+		ctx := contextx.WithScopes(context.Background(), []string{"jobs:read"})
 
 		Convey("When the required scope is present, access is allowed", func() {
-			err := authz.RequireScope(ctx, "files:read")
+			err := authz.RequireScope(ctx, "jobs:read")
 			So(err, ShouldBeNil)
 		})
 
 		Convey("When the required scope is missing, the sentinel is returned wrapped as 403", func() {
-			err := authz.RequireScope(ctx, "files:write")
+			err := authz.RequireScope(ctx, "jobs:write")
 			So(err, ShouldNotBeNil)
 			So(errors.Is(err, authz.ErrScopeDenied), ShouldBeTrue)
 			So(merry.HTTPCode(err), ShouldEqual, 403)
@@ -29,7 +29,7 @@ func TestRequireScope(t *testing.T) {
 	})
 
 	Convey("Given a context with no scopes, every required scope is denied", t, func() {
-		err := authz.RequireScope(context.Background(), "files:read")
+		err := authz.RequireScope(context.Background(), "jobs:read")
 		So(errors.Is(err, authz.ErrScopeDenied), ShouldBeTrue)
 	})
 }

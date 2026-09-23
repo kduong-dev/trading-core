@@ -10,19 +10,11 @@ import (
 // own name so service-to-service tokens can be bound to an intended recipient.
 const (
 	AudienceAuthenticationService = "authentication-service"
-	AudienceStorageService        = "storage-service"
 	AudienceReportingService      = "reporting-service"
 	AudienceAccountService        = "account-service"
 	AudienceBotService            = "bot-service"
 	AudienceJournalService        = "journal-service"
 	AudienceStockScreenerService  = "stock-screener"
-)
-
-// Service identifiers — used as the `act.sub` (actor) value on service-minted
-// tokens so audit logs can distinguish a user calling directly from a service
-// proxying on their behalf.
-const (
-	ActorReportingService = "reporting-service"
 )
 
 // Claims are the JWT claims carried by tokens issued in this system.
