@@ -60,6 +60,9 @@ def test_create_user_then_create_session(require_live, request_api):
         json={"email": email, "password": password},
     )
     assert create_user_response.status_code == 200
+    user = create_user_response.json()
+    assert set(user) == {"id", "email", "created_at"}
+    assert user["email"] == email
 
     create_session_response = request_api(
         "auth",
