@@ -41,6 +41,8 @@ github.com/kduong-dev/storage-service v0.1.1 h1:DkSOxtsFeDPPqEN4av0SJr7wflaiB65I
 github.com/kduong-dev/storage-service v0.1.1/go.mod h1:dRlAR//bw0T4blMJd10cmi1iUUQaZaa+Yems+rRUE64=
 github.com/kduong-dev/storage-service v0.2.0 h1:bdyQU7tky+Kk7OThgPfx8PEsgvU47m1Z+S0NTWuexec=
 github.com/kduong-dev/storage-service v0.2.0/go.mod h1:3TPmtZWiWGYXs8exk2G642/4HNeKQD6495UgM8nwrUU=
+github.com/kduong-dev/storage-service v0.3.0 h1:TQgsrdt0TuC4vvZCEeZjKvjWqx0cBEaA+z0KqBH3CeQ=
+github.com/kduong-dev/storage-service v0.3.0/go.mod h1:3TPmtZWiWGYXs8exk2G642/4HNeKQD6495UgM8nwrUU=
 github.com/klauspost/cpuid/v2 v2.2.10 h1:tBs3QSyvjDyFTq3uoc/9xFpCuOsJQFNPiAhYdw2skhE=
 github.com/klauspost/cpuid/v2 v2.2.10/go.mod h1:hqwkgyIinND0mEev00jJYCxPNVRVXFQeu1XKlok6oO0=
 github.com/lib/pq v1.12.3 h1:tTWxr2YLKwIvK90ZXEw8GP7UFHtcbTtty8zsI+YjrfQ=
