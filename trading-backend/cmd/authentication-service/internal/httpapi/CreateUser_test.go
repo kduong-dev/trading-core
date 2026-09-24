@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -50,6 +51,37 @@ func TestCreateUser(t *testing.T) {
 				user, err := userStore.GetByEmail(request.Context(), "new.user@example.com")
 				So(err, ShouldBeNil)
 				So(user.PasswordHash, ShouldStartWith, "$2a$")
+			})
+		})
+
+		rejected := map[string]httpapi.CreateUserInput{
+			"a blank email":            {Email: "  ", Password: "a-long-password"},
+			"a 7 character password":   {Email: "short@example.com", Password: "seven77"},
+			"a password over 72 bytes": {Email: "long@example.com", Password: strings.Repeat("a", 73)},
+		}
+		for description, input := range rejected {
+			Convey("When a user registers with "+description, func() {
+				body, _ := json.Marshal(input)
+				request := httptest.NewRequest(http.MethodPost, "/auth/v1/users", bytes.NewReader(body))
+				recorder := httptest.NewRecorder()
+				router.ServeHTTP(recorder, request)
+
+				Convey("Then it responds with bad request and stores nothing", func() {
+					So(recorder.Code, ShouldEqual, http.StatusBadRequest)
+					_, err := userStore.GetByEmail(request.Context(), strings.TrimSpace(input.Email))
+					So(err, ShouldNotBeNil)
+				})
+			})
+		}
+
+		Convey("When a user registers with an 8 character password", func() {
+			body, _ := json.Marshal(httpapi.CreateUserInput{Email: "eight@example.com", Password: "eight888"})
+			request := httptest.NewRequest(http.MethodPost, "/auth/v1/users", bytes.NewReader(body))
+			recorder := httptest.NewRecorder()
+			router.ServeHTTP(recorder, request)
+
+			Convey("Then it is accepted", func() {
+				So(recorder.Code, ShouldEqual, http.StatusOK)
 			})
 		})
 	})

@@ -3,6 +3,7 @@ package httpapi
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -20,6 +21,12 @@ type CreateUserInput struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+const (
+	MinimumPasswordLength = 8
+	// bcrypt only hashes the first 72 bytes and rejects anything longer.
+	MaximumPasswordBytes = 72
+)
 
 // CreateUserOutput is the user as the client sees it: never the password hash.
 type CreateUserOutput struct {
@@ -42,7 +49,17 @@ func (handler *Handler) CreateUser(responseWriter http.ResponseWriter, request *
 	}
 	email := strings.ToLower(strings.TrimSpace(input.Email))
 	if len(email) == 0 {
-		err = merry.Wrap(err).WithHTTPCode(http.StatusBadRequest).WithUserMessage("email is required")
+		err = merry.New("email is required").WithHTTPCode(http.StatusBadRequest).WithUserMessage("email is required")
+		return
+	}
+	if len([]rune(input.Password)) < MinimumPasswordLength {
+		message := fmt.Sprintf("password must be at least %d characters", MinimumPasswordLength)
+		err = merry.New(message).WithHTTPCode(http.StatusBadRequest).WithUserMessage(message)
+		return
+	}
+	if len(input.Password) > MaximumPasswordBytes {
+		message := fmt.Sprintf("password must be at most %d bytes", MaximumPasswordBytes)
+		err = merry.New(message).WithHTTPCode(http.StatusBadRequest).WithUserMessage(message)
 		return
 	}
 	passwordHash, err := HashPassword(input.Password)
