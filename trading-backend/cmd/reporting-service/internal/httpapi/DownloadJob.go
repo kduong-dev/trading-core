@@ -7,6 +7,7 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
 	"github.com/kduong/trading-backend/internal/authz"
 	"github.com/kduong/trading-backend/internal/fatal"
@@ -42,7 +43,7 @@ func (handler *Handler) DownloadJob(responseWriter http.ResponseWriter, request 
 	}
 	// jobQueryHandler.Get has already enforced that the caller owns this job;
 	// storage-service only knows about trading-core as a whole.
-	download, err := handler.storageClient.DownloadFile(ctx, fileID)
+	download, err := handler.storageClient.DownloadFile(ctx, storageservice.DownloadFileInput{FileID: fileID})
 	if err != nil {
 		return
 	}
