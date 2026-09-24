@@ -21,6 +21,13 @@ type CreateUserInput struct {
 	Password string `json:"password"`
 }
 
+// CreateUserOutput is the user as the client sees it: never the password hash.
+type CreateUserOutput struct {
+	ID        string    `json:"id"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 func (handler *Handler) CreateUser(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
@@ -56,8 +63,13 @@ func (handler *Handler) CreateUser(responseWriter http.ResponseWriter, request *
 		}
 		return
 	}
+	output := CreateUserOutput{
+		ID:        object.ID,
+		Email:     object.Email,
+		CreatedAt: object.CreatedAt,
+	}
 	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(&object)
+	err = json.NewEncoder(responseWriter).Encode(&output)
 	fatal.OnErrorUnlessDone(ctx, err)
 }
 
