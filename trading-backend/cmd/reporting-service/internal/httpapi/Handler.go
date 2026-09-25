@@ -1,0 +1,54 @@
+package httpapi
+
+import (
+	"errors"
+	"net/http"
+
+	"github.com/ansel1/merry"
+	"github.com/gorilla/mux"
+	"github.com/kduong-dev/storage-service/pkg/storageservice"
+	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
+	"github.com/kduong/trading-backend/internal/auth"
+)
+
+type Handler struct {
+	jobCommandHandler jobstore.CommandHandler
+	jobQueryHandler   jobstore.QueryHandler
+	storageClient     storageservice.Client
+	enqueueJob        func(job *jobstore.Job)
+}
+
+type NewRouterInput struct {
+	AuthMiddleware    *auth.Middleware
+	JobCommandHandler jobstore.CommandHandler
+	JobQueryHandler   jobstore.QueryHandler
+	StorageClient     storageservice.Client
+	EnqueueJob        func(job *jobstore.Job)
+}
+
+func NewRouter(input NewRouterInput) *mux.Router {
+	handler := &Handler{
+		jobCommandHandler: input.JobCommandHandler,
+		jobQueryHandler:   input.JobQueryHandler,
+		storageClient:     input.StorageClient,
+		enqueueJob:        input.EnqueueJob,
+	}
+	router := mux.NewRouter().StrictSlash(true)
+	reportV1Router := router.PathPrefix("/reports/v1").Subrouter()
+	reportV1Router.Use(input.AuthMiddleware.Handle)
+	reportV1Router.HandleFunc("/jobs", handler.CreateJob).Methods(http.MethodPost).Name("CreateJob")
+	reportV1Router.HandleFunc("/jobs", handler.ListJobs).Methods(http.MethodGet).Name("ListJobs")
+	reportV1Router.HandleFunc("/jobs/{job_id}", handler.GetJob).Methods(http.MethodGet).Name("GetJob")
+	reportV1Router.HandleFunc("/jobs/{job_id}/download", handler.DownloadJob).Methods(http.MethodGet).Name("DownloadJob")
+	return router
+}
+
+func merrifyError(err error) error {
+	switch {
+	case errors.Is(err, jobstore.ErrJobNotFound):
+		return merry.Wrap(err).WithHTTPCode(http.StatusNotFound).WithUserMessage("job not found")
+	case errors.Is(err, jobstore.ErrJobForbidden):
+		return merry.Wrap(err).WithHTTPCode(http.StatusForbidden).WithUserMessage("forbidden")
+	}
+	return err
+}
