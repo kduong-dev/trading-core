@@ -56,19 +56,15 @@ fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# --- sibling repos --------------------------------------------------------
-ORG="trading-core"
-echo "[repos] fetching repo list for $ORG"
-mapfile -t REPOS < <(gh repo list "$ORG" --json name --jq '.[].name' --limit 200)
-
-for r in "${REPOS[@]}"; do
-    if [[ -d "$ROOT/$r/.git" ]]; then
-        echo "[ok]   $r already cloned"
-    else
-        echo "[clone] $ORG/$r"
-        git clone "https://github.com/$ORG/$r.git" "$ROOT/$r"
-    fi
-done
+# --- formation -----------------------------------------------------------
+# formation-playbooks builds from ../trading-core, so it must sit next to this repo.
+FORMATION="$(dirname "$ROOT")/formation-playbooks"
+if [[ -d "$FORMATION/.git" ]]; then
+    echo "[ok]   formation-playbooks already cloned"
+else
+    echo "[clone] formation-playbooks"
+    git clone git@github.com:kduong-dev/formation-playbooks.git "$FORMATION"
+fi
 
 # --- frontend deps --------------------------------------------------------
 if [[ -f "$ROOT/trading-frontend/package.json" ]]; then

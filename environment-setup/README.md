@@ -1,9 +1,8 @@
 # environment-setup
 
 One-shot installer for everything `trading-core` needs: Docker, Go, Node.js,
-Python, GNU Make, Ansible, the sibling repos (cloned from
-`github.com/trading-core`), and the per-service deps (`npm install`, `pip
-install -e`, `go mod download`).
+Python, GNU Make, Ansible, the sibling `formation-playbooks` repo, and the
+per-service deps (`npm install`, `pip install -e`, `go mod download`).
 
 > **Primary target: Linux (Debian/Ubuntu).** Windows and macOS users should
 > read the platform notes below before running.
@@ -48,7 +47,7 @@ then run the script — it detects `brew` automatically and uses it instead of
 
 | Tool | Why |
 |---|---|
-| Docker | runs the compose stack ([trading-formation](../trading-formation/)) |
+| Docker | runs the compose stack (`formation-playbooks/projects/trading-core`) |
 | Go 1.25+ | builds [trading-backend](../trading-backend/) services |
 | Node.js (LTS) | builds & runs [trading-frontend](../trading-frontend/) (Next.js) |
 | Python 3.10+ | runs [integration-tests](../integration-tests/) and hosts Ansible |
@@ -61,8 +60,7 @@ Package source: `apt-get` (Debian/Ubuntu).
 ## After setup
 
 1. Start Docker Desktop / the docker daemon.
-2. Decrypt or fill in `trading-formation/secrets.yml` (ansible-vault).
-3. `cd trading-formation && ./run-services.sh render && ./run-services.sh start`.
+2. Decrypt or fill in `formation-playbooks/projects/trading-core/secrets.yml` (ansible-vault).
+3. `cd ../formation-playbooks/projects/trading-core && ./run-services.sh render && ./run-services.sh start`.
 
-See [trading-formation/README.md](../trading-formation/README.md) for the full
-boot sequence.
+See the README in `formation-playbooks/projects/trading-core` for the full boot sequence.

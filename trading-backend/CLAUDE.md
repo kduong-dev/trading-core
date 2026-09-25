@@ -6,7 +6,7 @@ A mono repo which houses microservices and scripts in the cmd.
 - If there are more than 3 parameters for the function input, please create a struct for the input, and copy the function/method name with the `Input` suffix. Keep the context as the first parameter and separate from the input.
 - Define sentinel errors where necessary for interfaces.
 - When writing new features, please write unit tests for it, particularly for abstract interfaces/implementations. Please ensure the test file package name has `_test`, and use `GoConvey` for the test framework. Use Behaviour Driven Development (BDD) methodology when writing test assertions.
-- Please write integration tests as well in the `integration-tests` repository.
+- Please write integration tests as well in the `integration-tests` directory at the monorepo root.
 - If the error is not client/validation side and is not expected at all within server side, use `fatal.OnError(err)`.
 - When implementing a http api endpoint, make use of the library that handles response errors:
 ```go
@@ -27,5 +27,5 @@ A mono repo which houses microservices and scripts in the cmd.
 ## Git Versioning
 - Any changes should be summarised for commit, and pushed to remote.
 
-## Trading-Formation
-- When implementing a new service, don't forget to wire up it to `playbook.yml` and `docker-compose.yml`
+## Formation
+- Formation lives in the separate `formation-playbooks` repo, under `projects/trading-core`. When implementing a new service, don't forget to wire it up in that project's `playbook.yml` and `services.yml`
