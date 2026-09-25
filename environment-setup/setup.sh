@@ -14,7 +14,7 @@ elif have apt-get; then
     SUDO=$(have sudo && echo sudo || echo "")
     $SUDO apt-get update
 else
-    echo "Unsupported platform — install deps manually (docker, go, node, python3, make, ansible)."
+    echo "Unsupported platform — install deps manually (docker, go, node, python3)."
     echo "Windows users: run this script inside a WSL 2 Ubuntu shell."
     exit 1
 fi
@@ -39,37 +39,21 @@ if [[ "$PM" == "brew" ]]; then
     install go go
     install node node
     install python3 python@3.12
-    install make make
-    install ansible-playbook ansible
     install git git
-    install gh gh
 else
     install docker docker.io
     install go golang-go
     install node nodejs npm
     install python3 python3 python3-pip python3-venv python3.12-venv python3-full
-    install make make
-    install ansible-playbook ansible
     install git git
-    install gh gh
 fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# --- formation -----------------------------------------------------------
-# formation-playbooks builds from ../trading-core, so it must sit next to this repo.
-FORMATION="$(dirname "$ROOT")/formation-playbooks"
-if [[ -d "$FORMATION/.git" ]]; then
-    echo "[ok]   formation-playbooks already cloned"
-else
-    echo "[clone] formation-playbooks"
-    git clone git@github.com:kduong-dev/formation-playbooks.git "$FORMATION"
-fi
-
 # --- frontend deps --------------------------------------------------------
-if [[ -f "$ROOT/trading-frontend/package.json" ]]; then
+if [[ -f "$ROOT/frontend/package.json" ]]; then
     echo "[npm] installing frontend deps"
-    (cd "$ROOT/trading-frontend" && npm install)
+    (cd "$ROOT/frontend" && npm install)
 fi
 
 # --- integration-tests deps ----------------------------------------------
@@ -79,10 +63,10 @@ if [[ -f "$ROOT/integration-tests/pyproject.toml" ]]; then
 fi
 
 # --- backend deps ---------------------------------------------------------
-if [[ -f "$ROOT/trading-backend/go.mod" ]]; then
+if [[ -f "$ROOT/backend/go.mod" ]]; then
     echo "[go] downloading backend modules"
-    (cd "$ROOT/trading-backend" && go mod download)
+    (cd "$ROOT/backend" && go mod download)
 fi
 
 echo
-echo "Done. Make sure the Docker daemon is running before ./run-services.sh start."
+echo "Done."

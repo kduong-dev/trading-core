@@ -1,6 +1,6 @@
-# trading-backend
+# backend
 
-A Go monorepo housing the microservices and CLI tools that power the trading platform. Services are orchestrated via `formation-playbooks/projects/trading-core` and run behind a Traefik reverse proxy.
+A Go monorepo housing the microservices and CLI tools that power the trading platform.
 
 ## Services
 
@@ -52,21 +52,18 @@ A Go monorepo housing the microservices and CLI tools that power the trading pla
 
 ## Running Services Locally
 
-Services are run via the Makefile in **proxy mode** — each run picks a free port and registers it with `formation-playbooks/projects/trading-core` so Traefik routes `<subdomain>.trading-core.local` to it.
+Each service is a `main` package under `cmd/` and reads its configuration from environment variables (`PORT`, `TOKEN_SECRET`, and the service-specific ones read in its `main.go`):
 
 ```bash
-make run-account-service
-make run-authentication-service
-make run-bot-service
-make run-journal-service
-make run-reporting-service
-make run-stock-screener
-make run-storage-service
+go run ./cmd/account-service
+go run ./cmd/authentication-service
+go run ./cmd/bot-service
+go run ./cmd/journal-service
+go run ./cmd/reporting-service
+go run ./cmd/stock-screener
 ```
 
-Run `make help` for the full list of targets.
-
-> Prerequisites: Redis on `localhost:6379`, PostgreSQL on `localhost:5432` (for `authentication-service`), and the `formation-playbooks/projects/trading-core` stack running for proxy routing.
+> Prerequisites: Redis on `localhost:6379`, and PostgreSQL on `localhost:5432` (for `authentication-service`).
 
 ## Running Tests
 
@@ -74,4 +71,4 @@ Run `make help` for the full list of targets.
 go test ./...
 ```
 
-Integration tests live in `integration-tests/` at the monorepo root.
+Integration tests live in [`integration-tests/`](../integration-tests/) at the monorepo root.

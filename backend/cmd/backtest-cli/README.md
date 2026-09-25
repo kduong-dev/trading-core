@@ -5,7 +5,7 @@ A command-line tool for backtesting trading strategies against historical price 
 ## Build
 
 ```bash
-cd trading-backend
+cd backend
 go build -o cmd/backtest-cli/backtest-cli ./cmd/backtest-cli
 ```
 

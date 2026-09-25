@@ -5,7 +5,7 @@ Python integration test boilerplate for the trading services.
 ## Prerequisites
 
 - Python 3.10+
-- trading-core services running locally (via `formation-playbooks/projects/trading-core`)
+- trading-core services running locally
 
 ## Setup
 

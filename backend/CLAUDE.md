@@ -26,6 +26,3 @@ A mono repo which houses microservices and scripts in the cmd.
 
 ## Git Versioning
 - Any changes should be summarised for commit, and pushed to remote.
-
-## Formation
-- Formation lives in the separate `formation-playbooks` repo, under `projects/trading-core`. When implementing a new service, don't forget to wire it up in that project's `playbook.yml` and `services.yml`
