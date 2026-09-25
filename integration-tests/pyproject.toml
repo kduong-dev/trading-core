@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trading-integration-tests"
+version = "0.1.0"
+description = "Python integration tests for trading services"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pytest>=8.2.0",
+  "requests>=2.32.0",
+]
