@@ -3,11 +3,11 @@ package botsync
 import (
 	"context"
 
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
 	"github.com/kduong/trading-backend/internal/broker"
 	"github.com/kduong/trading-backend/internal/eventsource"
 	"github.com/kduong/trading-backend/internal/eventsource/subscription"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/kduong/trading-backend/internal/logger"
 	"github.com/kduong/trading-backend/internal/tradingstrategy"
 )
@@ -20,8 +20,8 @@ type ParentActor struct {
 	macdFastPeriod     int
 	macdSlowPeriod     int
 	macdSignalPeriod   int
-	bollingerPeriod int
-	bollingerStdDev float64
+	bollingerPeriod    int
+	bollingerStdDev    float64
 
 	accountClientFactory    broker.AccountClientFactory
 	marketDataClientFactory broker.MarketDataClientFactory

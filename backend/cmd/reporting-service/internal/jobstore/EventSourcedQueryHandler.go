@@ -4,19 +4,19 @@ import (
 	"context"
 	"sort"
 
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/authz"
 	"github.com/kduong/trading-backend/internal/contextx"
 	"github.com/kduong/trading-backend/internal/eventsource"
 	"github.com/kduong/trading-backend/internal/eventsource/subscription"
-	"github.com/kduong/trading-backend/internal/fatal"
 )
 
 var _ QueryHandler = (*EventSourcedQueryHandler)(nil)
 
 type EventSourcedQueryHandler struct {
-	log      eventsource.Log
-	cursor   int64
-	jobByID  map[string]*Job
+	log     eventsource.Log
+	cursor  int64
+	jobByID map[string]*Job
 }
 
 type NewEventSourcedQueryHandlerInput struct {

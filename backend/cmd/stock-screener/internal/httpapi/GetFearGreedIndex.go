@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kduong/trading-backend/internal/fatal"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
 

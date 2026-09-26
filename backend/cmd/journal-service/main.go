@@ -3,11 +3,11 @@ package main
 import (
 	"net/http"
 
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/cmd/journal-service/internal/entrystore"
 	"github.com/kduong/trading-backend/cmd/journal-service/internal/httpapi"
 	"github.com/kduong/trading-backend/internal/auth"
 	"github.com/kduong/trading-backend/internal/eventsource"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/rs/cors"
 )
 

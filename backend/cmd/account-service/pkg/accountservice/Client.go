@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/config"
+	"github.com/kduong-dev/goutil/config"
 )
 
 var (
@@ -64,7 +64,7 @@ func ClientFromEnv() Client {
 	case "HTTP":
 		return NewHTTPClient(NewHTTPClientInput{
 			Timeout: config.EnvDuration("ACCOUNT_SERVICE_HTTP_CLIENT_TIMEOUT", 20*time.Second),
-			BaseURL: config.EnvURLOrFatal("ACCOUNT_SERVICE"),
+			BaseURL: *config.EnvURLFromPartsOrFatal("ACCOUNT_SERVICE"),
 		})
 	default:
 		panic("invalid account service client implementation: " + implementation)

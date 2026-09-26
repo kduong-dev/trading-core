@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/config"
+	"github.com/kduong-dev/goutil/config"
 )
 
 var (
@@ -52,7 +52,7 @@ func ClientFromEnv() Client {
 	case "HTTP":
 		return NewHTTPClient(NewHTTPClientInput{
 			Timeout: config.EnvDuration("JOURNAL_SERVICE_HTTP_CLIENT_TIMEOUT", 20*time.Second),
-			BaseURL: config.EnvURLOrFatal("JOURNAL_SERVICE"),
+			BaseURL: *config.EnvURLFromPartsOrFatal("JOURNAL_SERVICE"),
 		})
 	default:
 		panic("invalid journal service client implementation: " + implementation)

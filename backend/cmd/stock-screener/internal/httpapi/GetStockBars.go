@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/broker/alpaca"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
 

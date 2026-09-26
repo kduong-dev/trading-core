@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/config"
+	"github.com/kduong-dev/goutil/config"
 )
 
 type Client interface {
@@ -146,7 +146,7 @@ func ClientFromEnv() Client {
 	case "HTTP":
 		return NewHTTPClient(NewHTTPClientInput{
 			Timeout:   config.EnvDuration("ALPACA_CLIENT_HTTP_TIMEOUT", 20*time.Second),
-			BaseURL:   config.EnvURLOrFatal("ALPACA_API"),
+			BaseURL:   *config.EnvURLFromPartsOrFatal("ALPACA_API"),
 			KeyID:     config.EnvStringOrFatal("ALPACA_API_KEY"),
 			SecretKey: config.EnvStringOrFatal("ALPACA_API_SECRET"),
 		})

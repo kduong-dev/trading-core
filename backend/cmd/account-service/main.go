@@ -10,12 +10,12 @@ import (
 	"github.com/kduong/trading-backend/cmd/account-service/internal/oauthstatestore"
 	"github.com/kduong/trading-backend/cmd/account-service/internal/pendingselectionstore"
 
+	"github.com/kduong-dev/goutil/config"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/auth"
 	"github.com/kduong/trading-backend/internal/broker"
 	"github.com/kduong/trading-backend/internal/broker/tastytrade"
-	"github.com/kduong/trading-backend/internal/config"
 	"github.com/kduong/trading-backend/internal/eventsource"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/rs/cors"
 )
 
@@ -79,7 +79,7 @@ func main() {
 
 func LoadTastyTradeConfiguration(credentialsByType map[string]auth.Credentials, brokerType string) (auth.Credentials, *url.URL, *auth.TastyTradeTokenManager) {
 	credentials, ok := credentialsByType[brokerType]
-	fatal.Unless(ok)
+	fatal.Unlessf(ok, "credentials not configured for broker type %s", brokerType)
 	apiURL, err := url.Parse(credentials.APIURL)
 	fatal.OnError(err)
 	tokenManager := auth.NewTastyTradeTokenManager(&credentials.AuthorizationServer)

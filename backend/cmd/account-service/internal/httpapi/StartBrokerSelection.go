@@ -7,11 +7,11 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/cmd/account-service/internal/accountstore"
 	"github.com/kduong/trading-backend/cmd/account-service/internal/oauthstatestore"
 	"github.com/kduong/trading-backend/internal/broker"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
 

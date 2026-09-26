@@ -3,17 +3,17 @@ package entrystore
 import (
 	"context"
 
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/contextx"
 	"github.com/kduong/trading-backend/internal/eventsource"
 	"github.com/kduong/trading-backend/internal/eventsource/subscription"
-	"github.com/kduong/trading-backend/internal/fatal"
 )
 
 var _ CommandHandler = (*EventSourcedCommandHandler)(nil)
 
 type EventSourcedCommandHandler struct {
-	log       eventsource.Log
-	cursor    int64
+	log        eventsource.Log
+	cursor     int64
 	entryByKey map[string]*Entry
 }
 

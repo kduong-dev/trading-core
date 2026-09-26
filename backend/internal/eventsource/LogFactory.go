@@ -5,7 +5,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/kduong/trading-backend/internal/config"
+	"github.com/kduong-dev/goutil/config"
 )
 
 type LogFactory interface {

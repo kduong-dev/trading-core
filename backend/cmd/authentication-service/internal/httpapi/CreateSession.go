@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/ansel1/merry"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/cmd/authentication-service/internal/userstore"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 	"golang.org/x/crypto/bcrypt"
 )

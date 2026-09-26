@@ -6,7 +6,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/kduong/trading-backend/internal/fatal"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/lib/pq"
 )
 

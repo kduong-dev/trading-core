@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kduong-dev/goutil/config"
 	"github.com/kduong/trading-backend/cmd/authentication-service/internal/httpapi"
 	"github.com/kduong/trading-backend/cmd/authentication-service/internal/userstore"
-	"github.com/kduong/trading-backend/internal/config"
 	"github.com/rs/cors"
 )
 

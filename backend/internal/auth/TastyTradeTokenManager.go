@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/fatal"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
 

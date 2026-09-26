@@ -12,8 +12,8 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/cmd/authentication-service/internal/userstore"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
 

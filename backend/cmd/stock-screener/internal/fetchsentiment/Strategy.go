@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/config"
+	"github.com/kduong-dev/goutil/config"
 )
 
 type Classification string

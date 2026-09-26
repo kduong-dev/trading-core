@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/auth"
 	"github.com/kduong/trading-backend/internal/broker/tastytrade"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/manifoldco/promptui"
 )
 
@@ -35,7 +35,7 @@ type TastyTradeCLI struct {
 func NewTastyTradeCLI() *TastyTradeCLI {
 	credentialsByType := auth.CredentialsByTypeFromEnv()
 	credentials, ok := credentialsByType["tastytrade"]
-	fatal.Unless(ok)
+	fatal.Unless(ok, "tastytrade credentials not configured")
 	apiURL, err := url.Parse(credentials.APIURL)
 	fatal.OnError(err)
 	tokenManager := auth.NewTastyTradeTokenManager(&credentials.AuthorizationServer)

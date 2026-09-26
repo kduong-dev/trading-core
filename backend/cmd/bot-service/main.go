@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/cmd/account-service/pkg/accountservice"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/botsync"
@@ -15,7 +16,6 @@ import (
 	"github.com/kduong/trading-backend/internal/broker/tastytrade"
 	"github.com/kduong/trading-backend/internal/eventsource"
 	"github.com/kduong/trading-backend/internal/eventsource/subscription"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/rs/cors"
 )
 
@@ -44,15 +44,15 @@ func main() {
 		TastyTradeSandboxClientFactory: tastyTradeSandboxClientFactory,
 	})
 	botSyncActor := botsync.NewParentActor(botsync.NewParentActorInput{
-		Log:                    log,
-		BotEventLogFactory:     logFactory,
-		BotChannelFunc:         botChannelFunc,
-		RSIPeriod:              14,   // RSI period at 14 days
-		MACDFastPeriod:         12,   // Default MACD fast period.
-		MACDSlowPeriod:         26,   // Default MACD slow period.
-		MACDSignalPeriod:       9,    // Default MACD signal period.
-		BollingerPeriod: 20,  // Common Bollinger Bands period.
-		BollingerStdDev: 2.0, // Common Bollinger Bands standard deviation multiplier.
+		Log:                log,
+		BotEventLogFactory: logFactory,
+		BotChannelFunc:     botChannelFunc,
+		RSIPeriod:          14,  // RSI period at 14 days
+		MACDFastPeriod:     12,  // Default MACD fast period.
+		MACDSlowPeriod:     26,  // Default MACD slow period.
+		MACDSignalPeriod:   9,   // Default MACD signal period.
+		BollingerPeriod:    20,  // Common Bollinger Bands period.
+		BollingerStdDev:    2.0, // Common Bollinger Bands standard deviation multiplier.
 		BrokerAccountClientFactory: &brokerfactory.AccountClientFactory{
 			TastyTradeClientFactory:        tastyTradeClientFactory,
 			TastyTradeSandboxClientFactory: tastyTradeSandboxClientFactory,
@@ -101,7 +101,7 @@ func main() {
 
 func loadTastyTradeConfiguration(credentialsByType map[string]auth.Credentials, brokerType string) (*url.URL, *auth.TastyTradeTokenManager) {
 	credentials, ok := credentialsByType[brokerType]
-	fatal.Unless(ok)
+	fatal.Unlessf(ok, "credentials not configured for broker type %s", brokerType)
 	apiURL, err := url.Parse(credentials.APIURL)
 	fatal.OnError(err)
 	tokenManager := auth.NewTastyTradeTokenManager(&credentials.AuthorizationServer)

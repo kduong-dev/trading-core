@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/auth"
 	"github.com/kduong/trading-backend/internal/broker"
 	"github.com/kduong/trading-backend/internal/broker/tastytrade"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/fatal"
 )
 
 type BrokerOnboardingClientFactory struct {
@@ -44,7 +44,7 @@ func (factory *BrokerOnboardingClientFactory) GetAccountDiscoveryClient(ctx cont
 func (factory *BrokerOnboardingClientFactory) getTastyTradeAccountDiscoveryAdapter(ctx context.Context, accountType broker.AccountType) (adapter *broker.TastyTradeAccountDiscoveryAdapter, err error) {
 	accessToken := contextx.GetAccessToken(ctx)
 	credentials, ok := factory.CredentialsByType[accountType]
-	fatal.Unless(ok)
+	fatal.Unlessf(ok, "credentials not configured for account type %s", accountType)
 	apiURL, err := url.Parse(credentials.APIURL)
 	fatal.OnError(err)
 	adapter = broker.NewTastyTradeAccountDiscoveryAdapter(broker.TastyTradeAccountDiscoveryAdapterInput{

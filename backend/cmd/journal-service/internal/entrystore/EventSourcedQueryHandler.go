@@ -4,10 +4,10 @@ import (
 	"context"
 	"sort"
 
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/contextx"
 	"github.com/kduong/trading-backend/internal/eventsource"
 	"github.com/kduong/trading-backend/internal/eventsource/subscription"
-	"github.com/kduong/trading-backend/internal/fatal"
 )
 
 var _ QueryHandler = (*EventSourcedQueryHandler)(nil)

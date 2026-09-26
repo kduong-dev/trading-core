@@ -6,8 +6,8 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
 

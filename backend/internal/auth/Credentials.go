@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/kduong/trading-backend/internal/config"
-	"github.com/kduong/trading-backend/internal/fatal"
+	"github.com/kduong-dev/goutil/config"
+	"github.com/kduong-dev/goutil/fatal"
 )
 
 type Credentials struct {

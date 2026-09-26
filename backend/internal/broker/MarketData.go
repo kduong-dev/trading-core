@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/iterator"
+	"github.com/kduong-dev/goutil/iterator"
 )
 
 type MarketDataType string

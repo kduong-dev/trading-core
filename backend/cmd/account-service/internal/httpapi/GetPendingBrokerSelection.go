@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/ansel1/merry"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/broker"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
 

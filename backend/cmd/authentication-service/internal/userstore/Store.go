@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/config"
+	"github.com/kduong-dev/goutil/config"
 )
 
 var (

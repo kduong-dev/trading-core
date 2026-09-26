@@ -7,10 +7,10 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
 	"github.com/kduong/trading-backend/internal/authz"
-	"github.com/kduong/trading-backend/internal/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
 

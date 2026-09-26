@@ -8,7 +8,7 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/kduong/trading-backend/internal/fatal"
+	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/httpx"
 )
 
