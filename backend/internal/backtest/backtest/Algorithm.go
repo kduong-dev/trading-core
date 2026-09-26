@@ -111,7 +111,7 @@ func Run(cfg backtestconfig.Config, prices []replay.PricePoint, indicatorPrices 
 		if pending != nil && !event.At.Before(pending.FillAt) {
 			prevPos := account.PositionQuantity
 			wasStop := strings.HasPrefix(pending.Reason, "atr stop:")
-			wasOverboughtExit := pending.Reason == "overbought exit: rsi overbought"
+			wasOverboughtExit := strings.HasPrefix(pending.Reason, "overbought exit:")
 			applyPendingFill(pending, snapshot, event, &account, &decisions, cfg.BidAskSpreadPct)
 			if account.PositionQuantity > prevPos {
 				highSinceEntry = account.EntryPrice
@@ -231,7 +231,7 @@ func Run(cfg backtestconfig.Config, prices []replay.PricePoint, indicatorPrices 
 		if !event.At.Before(pending.FillAt) {
 			prevPos := account.PositionQuantity
 			wasStop := strings.HasPrefix(pending.Reason, "atr stop:")
-			wasOverboughtExit := pending.Reason == "overbought exit: rsi overbought"
+			wasOverboughtExit := strings.HasPrefix(pending.Reason, "overbought exit:")
 			applyPendingFill(pending, snapshot, event, &account, &decisions, cfg.BidAskSpreadPct)
 			if account.PositionQuantity > prevPos {
 				highSinceEntry = account.EntryPrice
