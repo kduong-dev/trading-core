@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/broker/alpaca"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/alpaca"
 )
 
 type alpacaCandleStrategy struct{}

@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/broker/tastytrade"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
 )
 
 type tastyTradeHistoricalStrategy struct{}

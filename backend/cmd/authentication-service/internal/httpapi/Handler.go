@@ -8,9 +8,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
 
-	"github.com/kduong/trading-backend/cmd/authentication-service/internal/userstore"
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/authz"
+	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/userstore"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/authz"
 )
 
 type Handler struct {

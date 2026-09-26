@@ -3,8 +3,8 @@ package botsync
 import (
 	"time"
 
-	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/tradingstrategy"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 )
 
 type sessionRange struct {

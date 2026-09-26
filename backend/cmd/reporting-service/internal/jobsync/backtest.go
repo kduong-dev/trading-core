@@ -10,13 +10,13 @@ import (
 	"time"
 
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
-	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong/trading-backend/internal/backtest/backtest"
-	"github.com/kduong/trading-backend/internal/backtest/backtestconfig"
-	"github.com/kduong/trading-backend/internal/backtest/chart"
-	"github.com/kduong/trading-backend/internal/backtest/indicator"
-	"github.com/kduong/trading-backend/internal/backtest/replay"
-	"github.com/kduong/trading-backend/internal/tradingstrategy"
+	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/backtest"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/backtestconfig"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/chart"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/indicator"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/replay"
+	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 )
 
 const JobKindBacktest = "backtest"

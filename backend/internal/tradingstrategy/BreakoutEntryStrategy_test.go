@@ -3,7 +3,7 @@ package tradingstrategy_test
 import (
 	"testing"
 
-	"github.com/kduong/trading-backend/internal/tradingstrategy"
+	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

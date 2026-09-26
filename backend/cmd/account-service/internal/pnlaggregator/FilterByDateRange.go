@@ -1,7 +1,7 @@
 package pnlaggregator
 
 import (
-	"github.com/kduong/trading-backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
 )
 
 // FilterByDateRange keeps only transactions whose ExecutedAt UTC date lies

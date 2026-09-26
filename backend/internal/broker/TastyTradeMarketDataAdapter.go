@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/kduong-dev/goutil/iterator"
-	"github.com/kduong/trading-backend/internal/broker/tastytrade"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
 )
 
 type TastyTradeMarketDataAdapter struct {

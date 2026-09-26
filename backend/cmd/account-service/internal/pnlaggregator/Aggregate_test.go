@@ -3,8 +3,8 @@ package pnlaggregator_test
 import (
 	"testing"
 
-	"github.com/kduong/trading-backend/cmd/account-service/internal/pnlaggregator"
-	"github.com/kduong/trading-backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/pnlaggregator"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

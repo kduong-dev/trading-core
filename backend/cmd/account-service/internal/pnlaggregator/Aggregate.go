@@ -4,7 +4,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
 )
 
 type DailyPnL struct {

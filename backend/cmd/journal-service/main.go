@@ -5,9 +5,9 @@ import (
 
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong/trading-backend/cmd/journal-service/internal/entrystore"
-	"github.com/kduong/trading-backend/cmd/journal-service/internal/httpapi"
-	"github.com/kduong/trading-backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/entrystore"
+	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/httpapi"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
 	"github.com/rs/cors"
 )
 

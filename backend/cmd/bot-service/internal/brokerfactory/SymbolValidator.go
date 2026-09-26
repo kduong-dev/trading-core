@@ -5,9 +5,9 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/kduong/trading-backend/cmd/bot-service/internal/symbolvalidator"
-	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/broker/tastytrade"
+	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/symbolvalidator"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
 )
 
 type symbolValidationFunc func(ctx context.Context, symbol string) error

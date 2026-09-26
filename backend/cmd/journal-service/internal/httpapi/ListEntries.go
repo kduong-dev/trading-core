@@ -8,7 +8,7 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/cmd/journal-service/internal/entrystore"
+	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/entrystore"
 )
 
 const defaultPageSize = 31

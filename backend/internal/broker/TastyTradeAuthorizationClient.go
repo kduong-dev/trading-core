@@ -9,7 +9,7 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
 )
 
 type TastyTradeAuthorizationClient struct {

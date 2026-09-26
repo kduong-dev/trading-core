@@ -3,7 +3,7 @@ package indicator
 import (
 	"math"
 
-	"github.com/kduong/trading-backend/internal/backtest/replay"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/replay"
 )
 
 // ComputeATR computes a close-only ATR series using Wilder's smoothing.

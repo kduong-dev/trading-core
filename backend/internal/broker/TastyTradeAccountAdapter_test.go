@@ -4,15 +4,15 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/broker/tastytrade"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 type fakeTastyTradeClient struct {
 	tastytrade.Client // embed so unused methods are present (and would panic if called)
-	pagesByOffset map[int]*tastytrade.AccountTransactionsOutput
-	calls         []tastytrade.GetAccountTransactionsInput
+	pagesByOffset     map[int]*tastytrade.AccountTransactionsOutput
+	calls             []tastytrade.GetAccountTransactionsInput
 }
 
 func (fake *fakeTastyTradeClient) GetAccountTransactions(ctx context.Context, input tastytrade.GetAccountTransactionsInput) (*tastytrade.AccountTransactionsOutput, error) {
@@ -32,38 +32,38 @@ func TestTastyTradeAccountAdapterGetTransactions(t *testing.T) {
 					Data: tastytrade.AccountTransactionsData{
 						Items: []tastytrade.AccountTransaction{
 							{
-								ID:                  1,
-								Symbol:              "AAPL",
-								TransactionType:     "Trade",
-								Action:              "Buy to Open",
-								Quantity:            "10",
-								Price:               "150.00",
-								Value:               "1500.00",
-								ValueEffect:         "Debit",
-								Commission:          "1.00",
-								CommissionEffect:    "Debit",
-								RegulatoryFees:      "0.02",
+								ID:                   1,
+								Symbol:               "AAPL",
+								TransactionType:      "Trade",
+								Action:               "Buy to Open",
+								Quantity:             "10",
+								Price:                "150.00",
+								Value:                "1500.00",
+								ValueEffect:          "Debit",
+								Commission:           "1.00",
+								CommissionEffect:     "Debit",
+								RegulatoryFees:       "0.02",
 								RegulatoryFeesEffect: "Debit",
-								ClearingFees:        "0.10",
-								ClearingFeesEffect:  "Debit",
-								ExecutedAt:          "2026-04-20T14:30:00Z",
+								ClearingFees:         "0.10",
+								ClearingFeesEffect:   "Debit",
+								ExecutedAt:           "2026-04-20T14:30:00Z",
 							},
 							{
-								ID:                  2,
-								Symbol:              "AAPL",
-								TransactionType:     "Trade",
-								Action:              "Sell to Close",
-								Quantity:            "10",
-								Price:               "160.00",
-								Value:               "100.00",
-								ValueEffect:         "Credit",
-								Commission:          "1.00",
-								CommissionEffect:    "Debit",
-								RegulatoryFees:      "0.03",
+								ID:                   2,
+								Symbol:               "AAPL",
+								TransactionType:      "Trade",
+								Action:               "Sell to Close",
+								Quantity:             "10",
+								Price:                "160.00",
+								Value:                "100.00",
+								ValueEffect:          "Credit",
+								Commission:           "1.00",
+								CommissionEffect:     "Debit",
+								RegulatoryFees:       "0.03",
 								RegulatoryFeesEffect: "Debit",
-								ClearingFees:        "0.10",
-								ClearingFeesEffect:  "Debit",
-								ExecutedAt:          "2026-04-20T18:00:00Z",
+								ClearingFees:         "0.10",
+								ClearingFeesEffect:   "Debit",
+								ExecutedAt:           "2026-04-20T18:00:00Z",
 							},
 						},
 					},

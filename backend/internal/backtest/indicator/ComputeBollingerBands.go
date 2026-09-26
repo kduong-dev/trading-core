@@ -3,7 +3,7 @@ package indicator
 import (
 	"math"
 
-	"github.com/kduong/trading-backend/internal/backtest/replay"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/replay"
 )
 
 func ComputeBollingerBands(prices []replay.PricePoint, period int, stdDevMultiplier float64) ([]Point, []Point, []Point) {

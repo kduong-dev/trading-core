@@ -9,8 +9,8 @@ import (
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
-	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong/trading-backend/internal/logger"
+	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
+	"github.com/kduong-dev/trading-core/backend/internal/logger"
 )
 
 const MaxRetries = 3

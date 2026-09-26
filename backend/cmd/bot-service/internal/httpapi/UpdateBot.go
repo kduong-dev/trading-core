@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botstore"
 )
 
 type UpdateBotInput struct {

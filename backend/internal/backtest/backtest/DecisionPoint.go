@@ -3,7 +3,7 @@ package backtest
 import (
 	"time"
 
-	"github.com/kduong/trading-backend/internal/tradingstrategy"
+	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 )
 
 type DecisionPoint struct {

@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/kduong-dev/goutil/config"
-	"github.com/kduong/trading-backend/cmd/authentication-service/internal/httpapi"
-	"github.com/kduong/trading-backend/cmd/authentication-service/internal/userstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/httpapi"
+	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/userstore"
 	"github.com/rs/cors"
 )
 

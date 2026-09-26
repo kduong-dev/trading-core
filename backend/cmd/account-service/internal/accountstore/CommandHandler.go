@@ -3,7 +3,7 @@ package accountstore
 import (
 	"context"
 
-	"github.com/kduong/trading-backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
 )
 
 type CommandHandler interface {

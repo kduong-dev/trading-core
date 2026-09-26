@@ -6,7 +6,7 @@ import (
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 )
 
 var _ CommandHandler = (*EventSourcedCommandHandler)(nil)

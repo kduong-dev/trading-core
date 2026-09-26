@@ -9,10 +9,10 @@ import (
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
-	"github.com/kduong/trading-backend/cmd/reporting-service/internal/httpapi"
-	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobsync"
-	"github.com/kduong/trading-backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/httpapi"
+	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobsync"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
 	"github.com/rs/cors"
 )
 

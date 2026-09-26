@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/kduong-dev/goutil/eventsource"
-	"github.com/kduong/trading-backend/cmd/account-service/internal/accountstore"
-	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

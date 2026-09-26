@@ -11,7 +11,7 @@ import (
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/cmd/bot-service/internal/botsync"
+	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botsync"
 )
 
 func (handler *Handler) StreamBotEvents(responseWriter http.ResponseWriter, request *http.Request) {

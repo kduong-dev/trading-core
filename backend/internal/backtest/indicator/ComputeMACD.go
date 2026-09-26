@@ -1,6 +1,6 @@
 package indicator
 
-import "github.com/kduong/trading-backend/internal/backtest/replay"
+import "github.com/kduong-dev/trading-core/backend/internal/backtest/replay"
 
 // ComputeMACD computes the MACD line and signal line.
 //

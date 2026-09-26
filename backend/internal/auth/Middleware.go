@@ -10,7 +10,7 @@ import (
 
 	"github.com/kduong-dev/goutil/config"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 )
 
 type Middleware struct {

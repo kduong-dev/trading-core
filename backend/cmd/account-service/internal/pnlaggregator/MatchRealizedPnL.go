@@ -3,7 +3,7 @@ package pnlaggregator
 import (
 	"sort"
 
-	"github.com/kduong/trading-backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
 )
 
 type openLot struct {

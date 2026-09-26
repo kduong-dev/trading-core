@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/ansel1/merry"
-	"github.com/kduong/trading-backend/internal/authz"
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/internal/authz"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

@@ -7,8 +7,8 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong/trading-backend/internal/authz"
+	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
+	"github.com/kduong-dev/trading-core/backend/internal/authz"
 )
 
 const defaultPageSize = 10

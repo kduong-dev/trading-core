@@ -1,4 +1,4 @@
-module github.com/kduong/trading-backend
+module github.com/kduong-dev/trading-core/backend
 
 go 1.27.1
 

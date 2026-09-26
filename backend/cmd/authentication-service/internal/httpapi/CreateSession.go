@@ -10,7 +10,7 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/cmd/authentication-service/internal/userstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/userstore"
 	"golang.org/x/crypto/bcrypt"
 )
 

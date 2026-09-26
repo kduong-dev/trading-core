@@ -1,6 +1,6 @@
 package pnlaggregator
 
-import "github.com/kduong/trading-backend/internal/broker"
+import "github.com/kduong-dev/trading-core/backend/internal/broker"
 
 type Summary struct {
 	TotalTrades     int     `json:"total_trades"`

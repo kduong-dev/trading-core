@@ -1,7 +1,7 @@
 package indicator
 
 import (
-	"github.com/kduong/trading-backend/internal/backtest/replay"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/replay"
 )
 
 func ComputeRSI(prices []replay.PricePoint, period int) []Point {

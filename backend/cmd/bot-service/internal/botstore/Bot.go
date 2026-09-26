@@ -1,6 +1,6 @@
 package botstore
 
-import "github.com/kduong/trading-backend/internal/tradingstrategy"
+import "github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 
 type BotStatus string
 

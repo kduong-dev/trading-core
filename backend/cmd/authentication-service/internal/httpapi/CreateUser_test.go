@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kduong/trading-backend/cmd/authentication-service/internal/httpapi"
-	"github.com/kduong/trading-backend/cmd/authentication-service/internal/userstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/httpapi"
+	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/userstore"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

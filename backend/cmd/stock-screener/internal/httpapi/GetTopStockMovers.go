@@ -7,7 +7,7 @@ import (
 
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/internal/broker/alpaca"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/alpaca"
 )
 
 func (handler *Handler) GetTopStockMovers(responseWriter http.ResponseWriter, request *http.Request) {

@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/backtest/backtestconfig"
-	"github.com/kduong/trading-backend/internal/backtest/indicator"
-	"github.com/kduong/trading-backend/internal/backtest/replay"
-	"github.com/kduong/trading-backend/internal/tradingstrategy"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/backtestconfig"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/indicator"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/replay"
+	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 )
 
 type pendingOrder struct {

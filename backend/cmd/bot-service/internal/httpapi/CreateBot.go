@@ -10,10 +10,10 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
-	"github.com/kduong/trading-backend/cmd/bot-service/internal/symbolvalidator"
-	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/tradingstrategy"
+	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/symbolvalidator"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 	uuid "github.com/satori/go.uuid"
 )
 

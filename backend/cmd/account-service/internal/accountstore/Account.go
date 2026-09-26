@@ -1,6 +1,6 @@
 package accountstore
 
-import "github.com/kduong/trading-backend/internal/broker"
+import "github.com/kduong-dev/trading-core/backend/internal/broker"
 
 type Account struct {
 	ID            string          `json:"account_id"`

@@ -6,8 +6,8 @@ import (
 	"net/url"
 
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/broker/tastytrade"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
 	"github.com/manifoldco/promptui"
 )
 

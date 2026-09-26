@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/kduong/trading-backend/cmd/stock-screener/internal/fetchsentiment"
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/broker/alpaca"
+	"github.com/kduong-dev/trading-core/backend/cmd/stock-screener/internal/fetchsentiment"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/alpaca"
 )
 
 type Handler struct {

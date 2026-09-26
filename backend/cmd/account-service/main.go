@@ -4,18 +4,18 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kduong/trading-backend/cmd/account-service/internal/accountstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
 
-	"github.com/kduong/trading-backend/cmd/account-service/internal/httpapi"
-	"github.com/kduong/trading-backend/cmd/account-service/internal/oauthstatestore"
-	"github.com/kduong/trading-backend/cmd/account-service/internal/pendingselectionstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/httpapi"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/oauthstatestore"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/pendingselectionstore"
 
 	"github.com/kduong-dev/goutil/config"
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/broker/tastytrade"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
 	"github.com/rs/cors"
 )
 

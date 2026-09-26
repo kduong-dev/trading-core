@@ -7,7 +7,7 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/cmd/journal-service/internal/entrystore"
+	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/entrystore"
 )
 
 func (handler *Handler) DeleteEntry(responseWriter http.ResponseWriter, request *http.Request) {

@@ -6,10 +6,10 @@ import (
 	"net/url"
 
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/broker/tastytrade"
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 )
 
 type BrokerOnboardingClientFactory struct {

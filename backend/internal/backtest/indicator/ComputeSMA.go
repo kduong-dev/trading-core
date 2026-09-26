@@ -1,6 +1,6 @@
 package indicator
 
-import "github.com/kduong/trading-backend/internal/backtest/replay"
+import "github.com/kduong-dev/trading-core/backend/internal/backtest/replay"
 
 // ComputeSMA computes a Simple Moving Average over the given price series.
 // Returns one Point per bar starting at index period-1.

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 )
 
 type HTTPClient struct {

@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/kduong/trading-backend/cmd/account-service/internal/pendingselectionstore"
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/pendingselectionstore"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 )
 
 func (handler *Handler) HandleAuthorizationCallback(responseWriter http.ResponseWriter, request *http.Request) {

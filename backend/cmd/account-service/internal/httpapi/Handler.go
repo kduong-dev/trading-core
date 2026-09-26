@@ -9,11 +9,11 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 
-	"github.com/kduong/trading-backend/cmd/account-service/internal/accountstore"
-	"github.com/kduong/trading-backend/cmd/account-service/internal/oauthstatestore"
-	"github.com/kduong/trading-backend/cmd/account-service/internal/pendingselectionstore"
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/oauthstatestore"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/pendingselectionstore"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
 )
 
 type Handler struct {

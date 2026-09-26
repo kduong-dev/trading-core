@@ -10,10 +10,10 @@ import (
 	"testing"
 
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/cmd/account-service/pkg/accountservice"
-	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
-	"github.com/kduong/trading-backend/cmd/bot-service/internal/symbolvalidator"
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/pkg/accountservice"
+	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/symbolvalidator"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

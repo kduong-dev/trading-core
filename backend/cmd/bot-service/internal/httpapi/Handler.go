@@ -10,11 +10,11 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong/trading-backend/cmd/account-service/pkg/accountservice"
-	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
-	"github.com/kduong/trading-backend/cmd/bot-service/internal/symbolvalidator"
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/pkg/accountservice"
+	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/symbolvalidator"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 )
 
 const MaxActiveAllocationPercent = 80.0

@@ -3,7 +3,7 @@ package tradingstrategy_test
 import (
 	"testing"
 
-	"github.com/kduong/trading-backend/internal/tradingstrategy"
+	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -61,7 +61,7 @@ func TestTrendEntryStrategy(t *testing.T) {
 			So(decision.Reason, ShouldEqual, "price at or above upper bollinger")
 		})
 
-Convey("When MACD data is missing", func() {
+		Convey("When MACD data is missing", func() {
 			input := fullInput
 			input.MACD = nil
 			decision := strategy.Evaluate(input)

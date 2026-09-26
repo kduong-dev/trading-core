@@ -6,7 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/internal/authz"
+	"github.com/kduong-dev/trading-core/backend/internal/authz"
 )
 
 func (handler *Handler) GetJob(responseWriter http.ResponseWriter, request *http.Request) {

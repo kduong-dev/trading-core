@@ -9,9 +9,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong/trading-backend/cmd/account-service/internal/accountstore"
-	"github.com/kduong/trading-backend/cmd/account-service/internal/pnlaggregator"
-	"github.com/kduong/trading-backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
+	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/pnlaggregator"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
 )
 
 const dailyPnLDateLayout = "2006-01-02"

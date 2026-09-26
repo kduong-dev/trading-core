@@ -3,8 +3,8 @@ package brokerfactory
 import (
 	"context"
 
-	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/broker/tastytrade"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
 )
 
 type MarketDataClientFactory struct {

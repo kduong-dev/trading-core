@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	"github.com/ansel1/merry"
-	"github.com/kduong/trading-backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 )
 
 // Scope identifiers. Tokens advertise these via the OAuth2 `scope` claim and

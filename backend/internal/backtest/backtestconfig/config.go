@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/kduong-dev/goutil/config"
-	"github.com/kduong/trading-backend/internal/backtest/replay"
-	"github.com/kduong/trading-backend/internal/tradingstrategy"
+	"github.com/kduong-dev/trading-core/backend/internal/backtest/replay"
+	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 )
 
 // Config holds all backtest CLI configuration, parsed and validated from

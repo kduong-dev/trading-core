@@ -10,8 +10,8 @@ import (
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
-	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong/trading-backend/internal/authz"
+	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
+	"github.com/kduong-dev/trading-core/backend/internal/authz"
 )
 
 func (handler *Handler) DownloadJob(responseWriter http.ResponseWriter, request *http.Request) {

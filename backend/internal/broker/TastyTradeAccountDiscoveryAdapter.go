@@ -3,7 +3,7 @@ package broker
 import (
 	"context"
 
-	"github.com/kduong/trading-backend/internal/broker/tastytrade"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
 )
 
 type TastyTradeAccountDiscoveryAdapter struct {

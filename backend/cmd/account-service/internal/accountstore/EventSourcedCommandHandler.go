@@ -6,9 +6,9 @@ import (
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/logger"
+	"github.com/kduong-dev/trading-core/backend/internal/broker"
+	"github.com/kduong-dev/trading-core/backend/internal/contextx"
+	"github.com/kduong-dev/trading-core/backend/internal/logger"
 )
 
 var _ CommandHandler = (*EventSourcedCommandHandler)(nil)

@@ -7,8 +7,8 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
-	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong/trading-backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
 )
 
 type Handler struct {

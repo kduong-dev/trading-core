@@ -3,10 +3,10 @@ package main
 import (
 	"net/http"
 
-	"github.com/kduong/trading-backend/cmd/stock-screener/internal/fetchsentiment"
-	"github.com/kduong/trading-backend/cmd/stock-screener/internal/httpapi"
-	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/broker/alpaca"
+	"github.com/kduong-dev/trading-core/backend/cmd/stock-screener/internal/fetchsentiment"
+	"github.com/kduong-dev/trading-core/backend/cmd/stock-screener/internal/httpapi"
+	"github.com/kduong-dev/trading-core/backend/internal/auth"
+	"github.com/kduong-dev/trading-core/backend/internal/broker/alpaca"
 	"github.com/rs/cors"
 )
 

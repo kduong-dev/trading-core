@@ -2,7 +2,7 @@ package botstore
 
 import (
 	"github.com/kduong-dev/goutil/eventsource"
-	"github.com/kduong/trading-backend/internal/tradingstrategy"
+	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 )
 
 const (
