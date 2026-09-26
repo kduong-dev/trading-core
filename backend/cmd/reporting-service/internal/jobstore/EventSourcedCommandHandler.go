@@ -6,7 +6,6 @@ import (
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong-dev/trading-core/backend/internal/logger"
 )
 
 var _ CommandHandler = (*EventSourcedCommandHandler)(nil)
@@ -31,7 +30,7 @@ func NewEventSourcedCommandHandler(input NewEventSourcedCommandHandlerInput) *Ev
 func (store *EventSourcedCommandHandler) CreateJob(ctx context.Context, job *Job) error {
 	store.catchUp(ctx)
 	if _, exists := store.jobByID[job.ID]; exists {
-		logger.Fatalf("job with ID %s already exists", job.ID)
+		fatal.LogErrorf("job with ID %s already exists", job.ID)
 	}
 	fatal.Unless(job.Status == JobStatusPending, "new job must have status pending")
 	payload := fatal.UnlessMarshal(EventFrame{
@@ -77,7 +76,7 @@ func (store *EventSourcedCommandHandler) UpdateJobStatus(ctx context.Context, in
 			JobRetriedEvent: &JobRetriedEvent{JobID: input.JobID, RetryCount: input.RetryCount, UpdatedAt: input.UpdatedAt},
 		})
 	default:
-		logger.Fatalf("unhandled job status %s", input.Status)
+		fatal.LogErrorf("unhandled job status %s", input.Status)
 	}
 	_, err = store.log.Append(payload)
 	fatal.OnError(err)

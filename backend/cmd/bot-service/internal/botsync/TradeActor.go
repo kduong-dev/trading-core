@@ -12,8 +12,8 @@ import (
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/logx"
 	"github.com/kduong-dev/trading-core/backend/internal/broker"
-	"github.com/kduong-dev/trading-core/backend/internal/logger"
 	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 )
 
@@ -177,7 +177,7 @@ func (actor *TradeActor) Run(ctx context.Context) {
 			Quantity: decision.Quantity,
 		})
 		if err != nil {
-			logger.Warnf("bot %s: failed to place %s order: %v", actor.botID, orderAction, err)
+			logx.Warnf("bot %s: failed to place %s order: %v", actor.botID, orderAction, err)
 			actor.mutex.Lock()
 			actor.orderFailedUntil = time.Now().Add(orderFailureCooldown)
 			actor.mutex.Unlock()
@@ -522,7 +522,7 @@ func (actor *TradeActor) startAccountSnapshotRefresher(ctx context.Context) {
 		actor.mutex.Lock()
 		defer actor.mutex.Unlock()
 		if err != nil {
-			logger.Warnf("bot %s: failed to refresh account snapshot: %v", actor.botID, err)
+			logx.Warnf("bot %s: failed to refresh account snapshot: %v", actor.botID, err)
 			return
 		}
 		// Optimistic guard: if we recently placed an order and the broker
@@ -595,6 +595,6 @@ func (actor *TradeActor) restoreStrategyState(ctx context.Context) {
 		},
 	})
 	if err != nil {
-		logger.Warnf("bot %s: failed to restore strategy state: %v", actor.botID, err)
+		logx.Warnf("bot %s: failed to restore strategy state: %v", actor.botID, err)
 	}
 }

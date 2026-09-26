@@ -8,9 +8,9 @@ import (
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/logx"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
-	"github.com/kduong-dev/trading-core/backend/internal/logger"
 )
 
 const MaxRetries = 3
@@ -123,7 +123,7 @@ func (actor *Actor) CompleteCatchup(ctx context.Context) {
 				UpdatedAt:  now,
 			})
 			if err != nil {
-				logger.Warnpf("reportsync: recover: could not dead-letter job %s: %v", job.ID, err)
+				logx.Warnf("reportsync: recover: could not dead-letter job %s: %v", job.ID, err)
 			} else {
 				deadLettered++
 			}
@@ -136,7 +136,7 @@ func (actor *Actor) CompleteCatchup(ctx context.Context) {
 			UpdatedAt:  now,
 		})
 		if err != nil {
-			logger.Warnpf("reportsync: recover: could not increment retry for job %s: %v", job.ID, err)
+			logx.Warnf("reportsync: recover: could not increment retry for job %s: %v", job.ID, err)
 			continue
 		}
 		actor.jobs <- job
@@ -144,10 +144,10 @@ func (actor *Actor) CompleteCatchup(ctx context.Context) {
 	}
 	actor.incompleteJobsByID = nil
 	if recovered > 0 {
-		logger.Warnpf("reportsync: recover: requeued %d interrupted job(s)", recovered)
+		logx.Warnf("reportsync: recover: requeued %d interrupted job(s)", recovered)
 	}
 	if deadLettered > 0 {
-		logger.Warnpf("reportsync: recover: dead-lettered %d job(s) that exceeded %d retries", deadLettered, MaxRetries)
+		logx.Warnf("reportsync: recover: dead-lettered %d job(s) that exceeded %d retries", deadLettered, MaxRetries)
 	}
 }
 
@@ -173,13 +173,13 @@ func (actor *Actor) process(ctx context.Context, job *jobstore.Job) {
 		UpdatedAt: now,
 	})
 	if err != nil {
-		logger.Warnpf("reportsync: process: could not mark job %s started: %v", job.ID, err)
+		logx.Warnf("reportsync: process: could not mark job %s started: %v", job.ID, err)
 		return
 	}
 	downloadURL, err := actor.run(ctx, job)
 	now = time.Now().UTC().Format(time.RFC3339)
 	if err != nil {
-		logger.Warnpf("reportsync: process: job %s failed: %v", job.ID, err)
+		logx.Warnf("reportsync: process: job %s failed: %v", job.ID, err)
 		err := actor.jobStoreCommandHandler.UpdateJobStatus(ctx, jobstore.UpdateJobStatusInput{
 			JobID:      job.ID,
 			Status:     jobstore.JobStatusFailed,
@@ -187,7 +187,7 @@ func (actor *Actor) process(ctx context.Context, job *jobstore.Job) {
 			UpdatedAt:  now,
 		})
 		if err != nil {
-			logger.Warnpf("reportsync: process: could not mark job %s failed: %v", job.ID, err)
+			logx.Warnf("reportsync: process: could not mark job %s failed: %v", job.ID, err)
 		}
 		return
 	}
@@ -198,7 +198,7 @@ func (actor *Actor) process(ctx context.Context, job *jobstore.Job) {
 		UpdatedAt:   now,
 	})
 	if err != nil {
-		logger.Warnpf("reportsync: process: could not mark job %s completed: %v", job.ID, err)
+		logx.Warnf("reportsync: process: could not mark job %s completed: %v", job.ID, err)
 	}
 }
 

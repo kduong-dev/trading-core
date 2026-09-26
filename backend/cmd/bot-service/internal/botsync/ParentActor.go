@@ -6,9 +6,9 @@ import (
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/logx"
 	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botstore"
 	"github.com/kduong-dev/trading-core/backend/internal/broker"
-	"github.com/kduong-dev/trading-core/backend/internal/logger"
 	"github.com/kduong-dev/trading-core/backend/internal/tradingstrategy"
 )
 
@@ -171,7 +171,7 @@ func (actor *ParentActor) applyBotStatusDeletedEvent(ctx context.Context, event 
 
 func (actor *ParentActor) startTradeActor(ctx context.Context, botID string) (err error) {
 	if _, isRunning := actor.cancelByBotID[botID]; isRunning {
-		logger.Noticef("Trading actor for bot %s is already running; no-op start", botID)
+		logx.Noticef("Trading actor for bot %s is already running; no-op start", botID)
 		return nil
 	}
 	bot, ok := actor.tradeBotByID[botID]
@@ -179,7 +179,7 @@ func (actor *ParentActor) startTradeActor(ctx context.Context, botID string) (er
 		return
 	}
 	strategy := tradingstrategy.FromParameters(bot.Parameters)
-	logger.Noticef(
+	logx.Noticef(
 		"bot %s strategy config: timeframe=%s maxPosition=%.4f atrMultiplier=%.4f sessionStart=%d sessionEnd=%d reentryCooldownMin=%d rsiPeriod=%d macdFast=%d macdSlow=%d macdSignal=%d bollPeriod=%d bollStdDev=%.2f",
 		botID,
 		bot.Parameters.Timeframe,
@@ -220,7 +220,7 @@ func (actor *ParentActor) startTradeActor(ctx context.Context, botID string) (er
 		Log:                    log,
 		BreakoutLookbackBars:   1,
 	})
-	logger.Noticef("Starting trading actor for bot %s", botID)
+	logx.Noticef("Starting trading actor for bot %s", botID)
 	go tradeActor.Run(ctx)
 	return
 }
@@ -230,7 +230,7 @@ func (actor *ParentActor) stopTradeActor(ctx context.Context, botID string) (err
 	if !ok {
 		return
 	}
-	logger.Noticef("Stopping trading actor for bot %s", botID)
+	logx.Noticef("Stopping trading actor for bot %s", botID)
 	cancel()
 	delete(actor.cancelByBotID, botID)
 	return nil

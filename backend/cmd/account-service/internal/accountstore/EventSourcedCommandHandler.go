@@ -8,7 +8,6 @@ import (
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/trading-core/backend/internal/broker"
 	"github.com/kduong-dev/trading-core/backend/internal/contextx"
-	"github.com/kduong-dev/trading-core/backend/internal/logger"
 )
 
 var _ CommandHandler = (*EventSourcedCommandHandler)(nil)
@@ -88,7 +87,7 @@ func (store *EventSourcedCommandHandler) checkBrokerIsAlreadyLinked(brokerAccoun
 			return ErrBrokerAccountAlreadyLinked
 		}
 	default:
-		logger.Fatalf("unknown broker type %s", brokerAccount.Type)
+		fatal.LogErrorf("unknown broker type %s", brokerAccount.Type)
 	}
 	return nil
 }
@@ -134,7 +133,7 @@ func (store *EventSourcedCommandHandler) applyBrokerAccountLinkedEvent(ctx conte
 	case broker.AccountTypeTastyTradeSandbox:
 		store.tastyTradeSandboxIDs[event.BrokerAccount.ID] = struct{}{}
 	default:
-		logger.Fatalf("unknown broker type %s", event.BrokerAccount.Type)
+		fatal.LogErrorf("unknown broker type %s", event.BrokerAccount.Type)
 	}
 	return
 }
