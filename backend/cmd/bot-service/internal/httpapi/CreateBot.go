@@ -9,10 +9,10 @@ import (
 	"time"
 
 	"github.com/ansel1/merry"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/symbolvalidator"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/httpx"
 	"github.com/kduong/trading-backend/internal/tradingstrategy"
 	uuid "github.com/satori/go.uuid"
 )
@@ -28,19 +28,19 @@ type CreateBotInput struct {
 
 func (input *CreateBotInput) Validate() (err error) {
 	if input.AccountID == "" || input.Symbol == "" {
-		err = merry.New("account_id and symbol are required").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("account_id and symbol are required").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	if !symbolPattern.MatchString(input.Symbol) {
-		err = merry.New("symbol must be 1-15 chars using A-Z, 0-9, '.', or '-'").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("symbol must be 1-15 chars using A-Z, 0-9, '.', or '-'").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	if math.IsNaN(input.AllocationPercent) || math.IsInf(input.AllocationPercent, 0) {
-		err = merry.New("allocation_percent must be a valid number").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("allocation_percent must be a valid number").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	if input.AllocationPercent <= 0 || input.AllocationPercent > MaxActiveAllocationPercent {
-		err = merry.New("allocation_percent must be greater than 0 and less than or equal to 80").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("allocation_percent must be greater than 0 and less than or equal to 80").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	return
@@ -70,22 +70,22 @@ func (handler *Handler) CreateBot(responseWriter http.ResponseWriter, request *h
 		return
 	}
 	if !account.BrokerLinked {
-		err = merry.New("account is not linked to a broker").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("account is not linked to a broker").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	if account.Broker == nil {
-		err = merry.New("account broker details are missing").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("account broker details are missing").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	err = handler.symbolValidator.Validate(ctx, account.Broker.Type, input.Symbol)
 	if err != nil {
 		switch {
 		case errors.Is(err, symbolvalidator.ErrSymbolNotTradableForBroker):
-			err = merry.New("symbol is not tradable for this account broker").WithHTTPCode(http.StatusBadRequest)
+			err = merry.UserError("symbol is not tradable for this account broker").WithHTTPCode(http.StatusBadRequest)
 		case errors.Is(err, symbolvalidator.ErrUnsupportedBrokerForSymbolValidation):
-			err = merry.New("account broker is not supported for symbol validation").WithHTTPCode(http.StatusBadRequest)
+			err = merry.UserError("account broker is not supported for symbol validation").WithHTTPCode(http.StatusBadRequest)
 		default:
-			err = merry.Wrap(err).WithHTTPCode(http.StatusBadGateway)
+			err = merry.Wrap(err).WithHTTPCode(http.StatusBadGateway).WithUserMessage("symbol validation failed")
 		}
 		return
 	}

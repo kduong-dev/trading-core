@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/internal/broker/alpaca"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 func (handler *Handler) GetStockNews(responseWriter http.ResponseWriter, request *http.Request) {

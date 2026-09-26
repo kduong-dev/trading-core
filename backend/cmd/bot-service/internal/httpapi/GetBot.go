@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/kduong/trading-backend/internal/httpx"
+	"github.com/kduong-dev/goutil/httpx"
 )
 
 func (handler *Handler) GetBot(responseWriter http.ResponseWriter, request *http.Request) {

@@ -6,8 +6,8 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/journal-service/internal/entrystore"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 func (handler *Handler) DeleteEntry(responseWriter http.ResponseWriter, request *http.Request) {
@@ -21,7 +21,7 @@ func (handler *Handler) DeleteEntry(responseWriter http.ResponseWriter, request 
 	vars := mux.Vars(request)
 	date := vars["date"]
 	if _, parseErr := time.Parse(dateLayout, date); parseErr != nil {
-		err = merry.New("date must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("date must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	now := time.Now().UTC().Format(time.RFC3339)

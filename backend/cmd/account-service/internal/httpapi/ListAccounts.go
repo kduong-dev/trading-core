@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong/trading-backend/internal/httpx"
+	"github.com/kduong-dev/goutil/httpx"
 )
 
 func (handler *Handler) ListAccounts(responseWriter http.ResponseWriter, request *http.Request) {

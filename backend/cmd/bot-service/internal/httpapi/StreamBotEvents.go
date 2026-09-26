@@ -8,10 +8,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/botsync"
 	"github.com/kduong/trading-backend/internal/eventsource"
 	"github.com/kduong/trading-backend/internal/eventsource/subscription"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 func (handler *Handler) StreamBotEvents(responseWriter http.ResponseWriter, request *http.Request) {

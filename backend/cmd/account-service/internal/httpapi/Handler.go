@@ -77,7 +77,7 @@ func GenerateStateToken() (string, error) {
 
 func checkBrokerLinked(account *accountstore.Account) error {
 	if !account.BrokerLinked {
-		return merry.New("account is not linked to a broker").WithHTTPCode(http.StatusBadRequest)
+		return merry.UserError("account is not linked to a broker").WithHTTPCode(http.StatusBadRequest)
 	}
 	return nil
 }

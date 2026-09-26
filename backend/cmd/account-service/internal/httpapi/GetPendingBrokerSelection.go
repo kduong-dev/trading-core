@@ -6,9 +6,9 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/internal/broker"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 type GetPendingBrokerSelectionOutput struct {
@@ -27,16 +27,16 @@ func (handler *Handler) GetPendingBrokerSelection(responseWriter http.ResponseWr
 	userID := contextx.GetUserID(ctx)
 	pendingToken := request.URL.Query().Get("pending_token")
 	if pendingToken == "" {
-		err = merry.New("pending_token query parameter is required").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("pending_token query parameter is required").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	entry, ok := handler.pendingSelectionStore.Get(pendingToken)
 	if !ok {
-		err = merry.New("pending broker selection not found").WithHTTPCode(http.StatusNotFound)
+		err = merry.UserError("pending broker selection not found").WithHTTPCode(http.StatusNotFound)
 		return
 	}
 	if entry.UserID != userID {
-		err = merry.New("forbidden").WithHTTPCode(http.StatusForbidden)
+		err = merry.UserError("forbidden").WithHTTPCode(http.StatusForbidden)
 		return
 	}
 	responseWriter.Header().Set("Content-Type", "application/json")

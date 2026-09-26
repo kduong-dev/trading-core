@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kduong/trading-backend/internal/httpx"
+	"github.com/kduong-dev/goutil/httpx"
 )
 
 func (handler *Handler) ListBots(responseWriter http.ResponseWriter, request *http.Request) {

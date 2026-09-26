@@ -9,8 +9,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/kduong-dev/goutil/config"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 type Middleware struct {

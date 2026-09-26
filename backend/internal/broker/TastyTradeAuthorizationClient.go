@@ -8,8 +8,8 @@ import (
 	"net/url"
 
 	"github.com/ansel1/merry"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/internal/auth"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 type TastyTradeAuthorizationClient struct {
@@ -74,8 +74,7 @@ func (client *TastyTradeAuthorizationClient) RequestAccessTokenUsingAuthorizatio
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)

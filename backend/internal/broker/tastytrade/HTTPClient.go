@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kduong/trading-backend/internal/httpx"
+	"github.com/kduong-dev/goutil/httpx"
 )
 
 type HTTPClient struct {
@@ -49,8 +49,7 @@ func (client *HTTPClient) ListAccounts(ctx context.Context) (output []*Accounts,
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	var accounts Accounts
@@ -83,8 +82,7 @@ func (client *HTTPClient) GetAccountBalance(ctx context.Context, accountID strin
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)
@@ -112,8 +110,7 @@ func (client *HTTPClient) GetAccountPositions(ctx context.Context, accountID str
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)
@@ -143,8 +140,7 @@ func (client *HTTPClient) SearchSymbol(ctx context.Context, symbol string) (outp
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	var body SearchSymbolsResponse
@@ -181,8 +177,7 @@ func (client *HTTPClient) GetAPIQuoteToken(ctx context.Context) (output *GetAPIQ
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)
@@ -251,8 +246,7 @@ func (client *HTTPClient) PlaceEquityOrder(ctx context.Context, input PlaceEquit
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusCreated && response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	var resp orderResponse
@@ -288,8 +282,7 @@ func (client *HTTPClient) GetLiveOrders(ctx context.Context, accountID string) (
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)
@@ -331,8 +324,7 @@ func (client *HTTPClient) GetAccountTransactions(ctx context.Context, input GetA
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)

@@ -8,10 +8,10 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
 	"github.com/kduong/trading-backend/internal/authz"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 func (handler *Handler) DownloadJob(responseWriter http.ResponseWriter, request *http.Request) {
@@ -33,12 +33,12 @@ func (handler *Handler) DownloadJob(responseWriter http.ResponseWriter, request 
 		return
 	}
 	if job.Status != jobstore.JobStatusCompleted {
-		err = merry.New("job is not yet available for download").WithHTTPCode(http.StatusConflict)
+		err = merry.UserError("job is not yet available for download").WithHTTPCode(http.StatusConflict)
 		return
 	}
 	fileID := extractFileID(job.DownloadURL)
 	if fileID == "" {
-		err = merry.New("job has no file attached").WithHTTPCode(http.StatusNotFound)
+		err = merry.UserError("job has no file attached").WithHTTPCode(http.StatusNotFound)
 		return
 	}
 	// jobQueryHandler.Get has already enforced that the caller owns this job;

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kduong/trading-backend/internal/httpx"
+	"github.com/kduong-dev/goutil/httpx"
 )
 
 var _ Client = (*HTTPClient)(nil)
@@ -62,8 +62,7 @@ func (client *HTTPClient) GetActiveStocks(ctx context.Context, input GetActiveSt
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)
@@ -89,8 +88,7 @@ func (client *HTTPClient) GetTopStockMovers(ctx context.Context, input GetTopSto
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)
@@ -113,8 +111,7 @@ func (client *HTTPClient) GetStockSnapshot(ctx context.Context, input GetStockSn
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)
@@ -200,8 +197,7 @@ func (client *HTTPClient) fetchStockBarsPage(ctx context.Context, target url.URL
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	var responseBody GetStockBarsResponseBody
@@ -243,8 +239,7 @@ func (client *HTTPClient) GetStockNews(ctx context.Context, input GetStockNewsIn
 		return
 	}
 	defer httpx.DrainAndClose(response.Body)
-	if response.StatusCode != http.StatusOK {
-		err = httpx.ExtractResponseError(response)
+	if err = httpx.UpstreamResponseError(response); err != nil {
 		return
 	}
 	err = json.NewDecoder(response.Body).Decode(&output)

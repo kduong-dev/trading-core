@@ -7,8 +7,8 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 type UpdateBotInput struct {
@@ -38,7 +38,7 @@ func (handler *Handler) UpdateBot(responseWriter http.ResponseWriter, request *h
 		}
 	case botstore.BotStatusStopped:
 	default:
-		err = merry.New(`status must be "running" or "stopped"`).WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError(`status must be "running" or "stopped"`).WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	err = handler.botStoreCommandHandler.UpdateBotStatus(ctx, botID, status)
@@ -63,7 +63,7 @@ func (handler *Handler) ensureAllocationPolicy(ctx context.Context, request *htt
 		return
 	}
 	if balance.CashBalance <= 0 {
-		err = merry.New("account has no available cash balance").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("account has no available cash balance").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	bots, err := handler.botStoreQueryHandler.List(ctx)
@@ -82,7 +82,7 @@ func (handler *Handler) ensureAllocationPolicy(ctx context.Context, request *htt
 		activeAllocationPercent += botItem.AllocationPercent
 	}
 	if activeAllocationPercent+bot.AllocationPercent > MaxActiveAllocationPercent {
-		err = merry.New("active bot allocation exceeds 80% for this account").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("active bot allocation exceeds 80% for this account").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	return

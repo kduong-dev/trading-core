@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/ansel1/merry"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
 	"github.com/kduong/trading-backend/internal/authz"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/httpx"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -21,7 +21,7 @@ type EnqueueJobInput struct {
 
 func (input *EnqueueJobInput) Validate() error {
 	if input.Kind == "" {
-		return merry.New("kind is required").WithHTTPCode(http.StatusBadRequest)
+		return merry.UserError("kind is required").WithHTTPCode(http.StatusBadRequest)
 	}
 	return nil
 }

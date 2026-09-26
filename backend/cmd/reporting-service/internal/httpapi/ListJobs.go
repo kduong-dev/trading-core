@@ -6,9 +6,9 @@ import (
 	"strconv"
 
 	"github.com/ansel1/merry"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/reporting-service/internal/jobstore"
 	"github.com/kduong/trading-backend/internal/authz"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 const defaultPageSize = 10
@@ -28,20 +28,18 @@ func (handler *Handler) ListJobs(responseWriter http.ResponseWriter, request *ht
 
 	page, err := parseQueryInt(request, "page", 0)
 	if err != nil {
-		err = merry.Wrap(err).WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	pageSize, err := parseQueryInt(request, "page_size", defaultPageSize)
 	if err != nil {
-		err = merry.Wrap(err).WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	if pageSize < 1 || pageSize > maxPageSize {
-		err = merry.New("page_size must be between 1 and 100").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("page_size must be between 1 and 100").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	if page < 0 {
-		err = merry.New("page must be >= 0").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("page must be >= 0").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 
@@ -61,5 +59,9 @@ func parseQueryInt(request *http.Request, key string, defaultValue int) (int, er
 	if raw == "" {
 		return defaultValue, nil
 	}
-	return strconv.Atoi(raw)
+	value, err := strconv.Atoi(raw)
+	if err != nil {
+		return 0, merry.UserErrorf("%s must be an integer", key).WithHTTPCode(http.StatusBadRequest)
+	}
+	return value, nil
 }

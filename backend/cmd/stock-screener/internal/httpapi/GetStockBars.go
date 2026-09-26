@@ -7,8 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/internal/broker/alpaca"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 func (handler *Handler) GetStockBars(responseWriter http.ResponseWriter, request *http.Request) {

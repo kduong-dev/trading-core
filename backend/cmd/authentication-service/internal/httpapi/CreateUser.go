@@ -13,8 +13,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/authentication-service/internal/userstore"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 type CreateUserInput struct {

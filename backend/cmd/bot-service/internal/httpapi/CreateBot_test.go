@@ -9,11 +9,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/account-service/pkg/accountservice"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/symbolvalidator"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/httpx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -116,7 +116,7 @@ func TestCreateBot_RejectsSymbolNotTradableForBroker(t *testing.T) {
 			Convey("Then request is rejected and bot is not created", func() {
 				So(recorder.Code, ShouldEqual, http.StatusBadRequest)
 				So(commandHandler.created, ShouldBeFalse)
-				var message httpx.Message
+				var message httpx.ResponseMessage
 				err := json.Unmarshal(recorder.Body.Bytes(), &message)
 				So(err, ShouldBeNil)
 				So(message.Message, ShouldNotBeBlank)

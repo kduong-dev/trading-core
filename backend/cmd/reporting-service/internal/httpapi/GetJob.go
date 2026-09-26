@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/internal/authz"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 func (handler *Handler) GetJob(responseWriter http.ResponseWriter, request *http.Request) {

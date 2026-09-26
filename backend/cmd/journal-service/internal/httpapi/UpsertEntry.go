@@ -7,8 +7,8 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/journal-service/internal/entrystore"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 const dateLayout = "2006-01-02"
@@ -23,7 +23,7 @@ type UpsertEntryInput struct {
 
 func (input *UpsertEntryInput) Validate() error {
 	if input.DisciplineScore < 0 || input.DisciplineScore > 10 {
-		return merry.New("discipline_score must be between 0 and 10").WithHTTPCode(http.StatusBadRequest)
+		return merry.UserError("discipline_score must be between 0 and 10").WithHTTPCode(http.StatusBadRequest)
 	}
 	return nil
 }
@@ -39,7 +39,7 @@ func (handler *Handler) UpsertEntry(responseWriter http.ResponseWriter, request 
 	vars := mux.Vars(request)
 	date := vars["date"]
 	if _, parseErr := time.Parse(dateLayout, date); parseErr != nil {
-		err = merry.New("date must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("date must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	input, err := httpx.DecodeJSONBody[UpsertEntryInput](request)

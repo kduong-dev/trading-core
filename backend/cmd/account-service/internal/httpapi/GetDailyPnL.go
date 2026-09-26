@@ -8,10 +8,10 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/account-service/internal/accountstore"
 	"github.com/kduong/trading-backend/cmd/account-service/internal/pnlaggregator"
 	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 const dailyPnLDateLayout = "2006-01-02"
@@ -43,25 +43,25 @@ func (handler *Handler) GetDailyPnL(responseWriter http.ResponseWriter, request 
 	from := request.URL.Query().Get("from")
 	to := request.URL.Query().Get("to")
 	if from == "" || to == "" {
-		err = merry.New("from and to are required (YYYY-MM-DD)").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("from and to are required (YYYY-MM-DD)").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	fromDate, parseErr := time.Parse(dailyPnLDateLayout, from)
 	if parseErr != nil {
-		err = merry.New("from must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("from must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	toDate, parseErr := time.Parse(dailyPnLDateLayout, to)
 	if parseErr != nil {
-		err = merry.New("to must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("to must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	if toDate.Before(fromDate) {
-		err = merry.New("to must be on or after from").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("to must be on or after from").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	if toDate.Sub(fromDate).Hours()/24 > dailyPnLMaxRangeDays {
-		err = merry.New("date range must be at most 366 days").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("date range must be at most 366 days").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 

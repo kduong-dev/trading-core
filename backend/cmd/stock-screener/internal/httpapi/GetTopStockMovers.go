@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/internal/broker/alpaca"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 func (handler *Handler) GetTopStockMovers(responseWriter http.ResponseWriter, request *http.Request) {

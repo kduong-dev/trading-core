@@ -7,7 +7,7 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
-	"github.com/kduong/trading-backend/internal/httpx"
+	"github.com/kduong-dev/goutil/httpx"
 )
 
 func (handler *Handler) GetEntry(responseWriter http.ResponseWriter, request *http.Request) {
@@ -21,7 +21,7 @@ func (handler *Handler) GetEntry(responseWriter http.ResponseWriter, request *ht
 	vars := mux.Vars(request)
 	date := vars["date"]
 	if _, parseErr := time.Parse(dateLayout, date); parseErr != nil {
-		err = merry.New("date must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("date must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	entry, err := handler.entryQueryHandler.Get(ctx, date)

@@ -7,10 +7,10 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/account-service/internal/accountstore"
 	"github.com/kduong/trading-backend/internal/broker"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 type CompleteBrokerSelectionInput struct {
@@ -37,21 +37,21 @@ func (handler *Handler) CompleteBrokerSelection(responseWriter http.ResponseWrit
 		return
 	}
 	if input.PendingToken == "" || input.BrokerAccountID == "" {
-		err = merry.New("pending_token and broker_account_id are required").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("pending_token and broker_account_id are required").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	entry, ok := handler.pendingSelectionStore.Get(input.PendingToken)
 	if !ok {
-		err = merry.New("pending broker selection not found").WithHTTPCode(http.StatusNotFound)
+		err = merry.UserError("pending broker selection not found").WithHTTPCode(http.StatusNotFound)
 		return
 	}
 	if entry.UserID != userID {
-		err = merry.New("forbidden").WithHTTPCode(http.StatusForbidden)
+		err = merry.UserError("forbidden").WithHTTPCode(http.StatusForbidden)
 		return
 	}
 	isValidBrokerAccount := slices.Contains(entry.BrokerAccounts, input.BrokerAccountID)
 	if !isValidBrokerAccount {
-		err = merry.New("broker account is not available for this selection").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("broker account is not available for this selection").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	brokerAccount := &broker.Account{

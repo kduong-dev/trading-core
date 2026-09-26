@@ -8,11 +8,11 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong/trading-backend/cmd/account-service/internal/accountstore"
 	"github.com/kduong/trading-backend/cmd/account-service/internal/oauthstatestore"
 	"github.com/kduong/trading-backend/internal/broker"
 	"github.com/kduong/trading-backend/internal/contextx"
-	"github.com/kduong/trading-backend/internal/httpx"
 )
 
 type StartBrokerSelectionInput struct {
@@ -39,7 +39,7 @@ func (handler *Handler) StartBrokerSelection(responseWriter http.ResponseWriter,
 		return
 	}
 	if input.Broker == "" {
-		err = merry.New("broker is required").WithHTTPCode(http.StatusBadRequest)
+		err = merry.UserError("broker is required").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	_, err = handler.accountStoreQueryHandler.Get(ctx, accountstore.GetInput{
@@ -55,7 +55,7 @@ func (handler *Handler) StartBrokerSelection(responseWriter http.ResponseWriter,
 	}
 	authorizationClient, err := handler.brokerOnBoardingClientFactory.GetAuthorizationClient(input.Broker)
 	if err != nil {
-		err = merry.Wrap(err).WithHTTPCode(http.StatusBadRequest)
+		err = merry.Wrap(err).WithHTTPCode(http.StatusBadRequest).WithUserMessage("unsupported broker")
 		return
 	}
 	handler.oauthStateStore.Put(stateToken, oauthstatestore.Entry{
