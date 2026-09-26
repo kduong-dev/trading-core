@@ -11,6 +11,7 @@ func TestOverboughtExitStrategy(t *testing.T) {
 	Convey("Given an overbought exit strategy with RSI threshold 70", t, func() {
 		overboughtRSI := 75.0
 		normalRSI := 60.0
+		bollUpper := 99.0
 		strategy := tradingstrategy.NewOverboughtExitStrategy(tradingstrategy.NewOverboughtExitStrategyInput{
 			OverboughtRSI: 70,
 		})
@@ -18,13 +19,38 @@ func TestOverboughtExitStrategy(t *testing.T) {
 			Price:            100,
 			PositionQuantity: 10,
 			RSI:              &overboughtRSI,
+			BollUpper:        &bollUpper,
 		}
 
-		Convey("When RSI is overbought and price is not making a new lookback high, exit fires", func() {
+		Convey("When RSI is overbought, price is at the upper bollinger and not making a new lookback high, exit fires", func() {
 			decision := strategy.Evaluate(fullInput)
 			So(decision.Action, ShouldEqual, tradingstrategy.ActionSell)
-			So(decision.Reason, ShouldEqual, "overbought exit: rsi overbought")
+			So(decision.Reason, ShouldEqual, "overbought exit: rsi overbought and price at upper bollinger")
 			So(decision.Quantity, ShouldEqual, 10)
+		})
+
+		Convey("When RSI is overbought and price equals the upper bollinger, exit fires", func() {
+			input := fullInput
+			input.BollUpper = &input.Price
+			decision := strategy.Evaluate(input)
+			So(decision.Action, ShouldEqual, tradingstrategy.ActionSell)
+		})
+
+		Convey("When RSI is overbought but price is below the upper bollinger, exit does not fire", func() {
+			highBollUpper := 105.0
+			input := fullInput
+			input.BollUpper = &highBollUpper
+			decision := strategy.Evaluate(input)
+			So(decision.Action, ShouldEqual, tradingstrategy.ActionNone)
+			So(decision.Reason, ShouldEqual, "rsi overbought but price below upper bollinger")
+		})
+
+		Convey("When upper bollinger data is missing, exit does not fire", func() {
+			input := fullInput
+			input.BollUpper = nil
+			decision := strategy.Evaluate(input)
+			So(decision.Action, ShouldEqual, tradingstrategy.ActionNone)
+			So(decision.Reason, ShouldEqual, "boll_upper unavailable")
 		})
 
 		Convey("When RSI is overbought and price is above the lookback high, hold (genuine breakout)", func() {
