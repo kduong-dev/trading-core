@@ -8,12 +8,12 @@ import (
 	"github.com/kduong-dev/goutil/config"
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/httpapi"
 	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
 	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobsync"
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
-	"github.com/rs/cors"
 )
 
 func main() {
@@ -52,13 +52,6 @@ func main() {
 		StorageClient:     storageClient,
 		EnqueueJob:        actor.Notify,
 	})
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"},
-		AllowedHeaders:   []string{"Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization", "Accept", "Origin", "Range", "If-Range"},
-		ExposedHeaders:   []string{"Set-Cookie", "Allow", "Content-Length", "Accept-Ranges", "Content-Range", "Last-Modified"},
-		AllowCredentials: false,
-	})
-	err = http.ListenAndServe(":8082", c.Handler(router))
+	err = http.ListenAndServe(":8082", httpx.HandlerWithCORS(router))
 	fatal.OnError(err)
 }

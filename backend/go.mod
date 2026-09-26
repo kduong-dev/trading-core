@@ -7,11 +7,10 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/gorilla/mux v1.8.1
 	github.com/gorilla/websocket v1.5.3
-	github.com/kduong-dev/goutil v0.3.1
+	github.com/kduong-dev/goutil v0.4.0
 	github.com/kduong-dev/storage-service v0.3.0
 	github.com/lib/pq v1.12.3
 	github.com/manifoldco/promptui v0.9.0
-	github.com/rs/cors v1.11.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/smartystreets/goconvey v1.8.1
 	golang.org/x/crypto v0.49.0
@@ -25,6 +24,7 @@ require (
 	github.com/gopherjs/gopherjs v1.20.1 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/redis/go-redis/v9 v9.22.0 // indirect
+	github.com/rs/cors v1.11.1 // indirect
 	github.com/smarty/assertions v1.16.0 // indirect
 	github.com/yuin/gopher-lua v1.1.2 // indirect
 	go.uber.org/atomic v1.11.0 // indirect

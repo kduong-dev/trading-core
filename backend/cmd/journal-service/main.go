@@ -5,10 +5,10 @@ import (
 
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/entrystore"
 	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/httpapi"
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
-	"github.com/rs/cors"
 )
 
 func main() {
@@ -31,13 +31,6 @@ func main() {
 		EntryCommandHandler: commandHandler,
 		EntryQueryHandler:   queryHandler,
 	})
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"},
-		AllowedHeaders:   []string{"Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization", "Accept", "Origin", "Range", "If-Range"},
-		ExposedHeaders:   []string{"Set-Cookie", "Allow", "Content-Length", "Accept-Ranges", "Content-Range", "Last-Modified"},
-		AllowCredentials: false,
-	})
-	err = http.ListenAndServe(":8084", c.Handler(router))
+	err = http.ListenAndServe(":8084", httpx.HandlerWithCORS(router))
 	fatal.OnError(err)
 }

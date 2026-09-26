@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
 
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/httpapi"
@@ -16,7 +17,6 @@ import (
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
 	"github.com/kduong-dev/trading-core/backend/internal/broker"
 	"github.com/kduong-dev/trading-core/backend/internal/broker/tastytrade"
-	"github.com/rs/cors"
 )
 
 func main() {
@@ -67,14 +67,7 @@ func main() {
 		BackendRedirectURI: authorizationRedirectURI.String(),
 		FrontendBaseURL:    config.EnvStringOrFatal("FRONTEND_BASE_URL"),
 	})
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "HEAD", "OPTIONS", "POST", "PUT", "DELETE"},
-		AllowedHeaders:   []string{"Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization", "Accept", "Origin", "Range", "If-Range"},
-		ExposedHeaders:   []string{"Set-Cookie", "Allow", "Content-Length", "Accept-Ranges", "Content-Range", "Last-Modified"},
-		AllowCredentials: false,
-	})
-	http.ListenAndServe(":9000", c.Handler(router))
+	http.ListenAndServe(":9000", httpx.HandlerWithCORS(router))
 }
 
 func LoadTastyTradeConfiguration(credentialsByType map[string]auth.Credentials, brokerType string) (auth.Credentials, *url.URL, *auth.TastyTradeTokenManager) {

@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/kduong-dev/goutil/config"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/httpapi"
 	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/userstore"
-	"github.com/rs/cors"
 )
 
 func main() {
@@ -20,12 +20,5 @@ func main() {
 		TokenSecret: []byte(config.EnvStringOrFatal("TOKEN_SECRET")),
 		ExpiryTTL:   1 * time.Hour,
 	})
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "HEAD", "OPTIONS", "POST", "PUT", "DELETE"},
-		AllowedHeaders:   []string{"Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization", "Accept", "Origin", "Range", "If-Range"},
-		ExposedHeaders:   []string{"Set-Cookie", "Allow", "Content-Length", "Accept-Ranges", "Content-Range", "Last-Modified"},
-		AllowCredentials: false,
-	})
-	http.ListenAndServe(":9100", c.Handler(router))
+	http.ListenAndServe(":9100", httpx.HandlerWithCORS(router))
 }
