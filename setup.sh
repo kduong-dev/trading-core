@@ -48,7 +48,7 @@ else
     install git git
 fi
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # --- frontend deps --------------------------------------------------------
 if [[ -f "$ROOT/frontend/package.json" ]]; then
