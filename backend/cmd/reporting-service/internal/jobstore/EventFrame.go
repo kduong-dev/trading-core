@@ -1,6 +1,6 @@
 package jobstore
 
-import "github.com/kduong/trading-backend/internal/eventsource"
+import "github.com/kduong-dev/goutil/eventsource"
 
 const (
 	EventTypeJobEnqueued  eventsource.EventType = "job_enqueued"

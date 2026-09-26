@@ -11,11 +11,11 @@ import (
 	"github.com/kduong/trading-backend/cmd/account-service/internal/pendingselectionstore"
 
 	"github.com/kduong-dev/goutil/config"
+	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/auth"
 	"github.com/kduong/trading-backend/internal/broker"
 	"github.com/kduong/trading-backend/internal/broker/tastytrade"
-	"github.com/kduong/trading-backend/internal/eventsource"
 	"github.com/rs/cors"
 )
 

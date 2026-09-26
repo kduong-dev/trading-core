@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/kduong-dev/goutil/eventsource"
+	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/cmd/account-service/pkg/accountservice"
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/botstore"
@@ -14,8 +16,6 @@ import (
 	"github.com/kduong/trading-backend/cmd/bot-service/internal/httpapi"
 	"github.com/kduong/trading-backend/internal/auth"
 	"github.com/kduong/trading-backend/internal/broker/tastytrade"
-	"github.com/kduong/trading-backend/internal/eventsource"
-	"github.com/kduong/trading-backend/internal/eventsource/subscription"
 	"github.com/rs/cors"
 )
 

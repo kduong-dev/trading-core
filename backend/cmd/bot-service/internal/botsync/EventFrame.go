@@ -1,6 +1,6 @@
 package botsync
 
-import "github.com/kduong/trading-backend/internal/eventsource"
+import "github.com/kduong-dev/goutil/eventsource"
 
 const EventTypeBotDecisionRecorded eventsource.EventType = "bot_decision_recorded"
 

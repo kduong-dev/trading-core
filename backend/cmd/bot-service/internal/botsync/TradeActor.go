@@ -9,10 +9,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kduong-dev/goutil/eventsource"
+	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/eventsource"
-	"github.com/kduong/trading-backend/internal/eventsource/subscription"
 	"github.com/kduong/trading-backend/internal/logger"
 	"github.com/kduong/trading-backend/internal/tradingstrategy"
 )

@@ -1,7 +1,7 @@
 package botstore
 
 import (
-	"github.com/kduong/trading-backend/internal/eventsource"
+	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong/trading-backend/internal/tradingstrategy"
 )
 

@@ -1,8 +1,8 @@
 package accountstore
 
 import (
+	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong/trading-backend/internal/broker"
-	"github.com/kduong/trading-backend/internal/eventsource"
 )
 
 const (

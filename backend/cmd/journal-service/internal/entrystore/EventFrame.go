@@ -1,6 +1,6 @@
 package entrystore
 
-import "github.com/kduong/trading-backend/internal/eventsource"
+import "github.com/kduong-dev/goutil/eventsource"
 
 const (
 	EventTypeEntryUpserted eventsource.EventType = "entry_upserted"
