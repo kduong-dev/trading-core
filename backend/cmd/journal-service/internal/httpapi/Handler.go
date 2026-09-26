@@ -1,11 +1,10 @@
 package httpapi
 
 import (
-	"errors"
 	"net/http"
 
-	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/entrystore"
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
 )
@@ -36,12 +35,7 @@ func NewRouter(input NewRouterInput) *mux.Router {
 	return router
 }
 
-func merrifyError(err error) error {
-	switch {
-	case errors.Is(err, entrystore.ErrEntryNotFound):
-		return merry.Wrap(err).WithHTTPCode(http.StatusNotFound).WithUserMessage("entry not found")
-	case errors.Is(err, entrystore.ErrEntryForbidden):
-		return merry.Wrap(err).WithHTTPCode(http.StatusForbidden).WithUserMessage("forbidden")
-	}
-	return err
+var merrifiedSentinels = httpx.MerrifiedSentinels{
+	{Sentinel: entrystore.ErrEntryNotFound, StatusCode: http.StatusNotFound, UserMessage: "entry not found"},
+	{Sentinel: entrystore.ErrEntryForbidden, StatusCode: http.StatusForbidden, UserMessage: "forbidden"},
 }

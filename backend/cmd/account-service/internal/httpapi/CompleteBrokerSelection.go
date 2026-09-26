@@ -64,7 +64,7 @@ func (handler *Handler) CompleteBrokerSelection(responseWriter http.ResponseWrit
 		BrokerAccount: brokerAccount,
 	})
 	if err != nil {
-		err = merrifyAccountStoreError(err)
+		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	handler.pendingSelectionStore.Delete(input.PendingToken)

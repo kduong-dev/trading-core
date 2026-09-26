@@ -46,7 +46,7 @@ func (handler *Handler) StartBrokerSelection(responseWriter http.ResponseWriter,
 		AccountID: accountID,
 	})
 	if err != nil {
-		err = merrifyAccountStoreError(err)
+		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	stateToken, err := GenerateStateToken()

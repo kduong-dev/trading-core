@@ -2,7 +2,6 @@ package httpapi
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -74,10 +73,7 @@ func (handler *Handler) CreateUser(responseWriter http.ResponseWriter, request *
 	}
 	err = handler.userStore.Put(ctx, object)
 	if err != nil {
-		if errors.Is(err, userstore.ErrAlreadyExists) {
-			err = merry.Wrap(err).WithHTTPCode(http.StatusConflict).WithUserMessage("user already exists")
-			return
-		}
+		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	output := CreateUserOutput{

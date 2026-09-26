@@ -69,7 +69,7 @@ func (handler *Handler) GetDailyPnL(responseWriter http.ResponseWriter, request 
 		AccountID: accountID,
 	})
 	if err != nil {
-		err = merrifyAccountStoreError(err)
+		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	err = checkBrokerLinked(account)

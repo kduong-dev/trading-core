@@ -3,12 +3,12 @@ package httpapi
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"errors"
 	"net/http"
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/oauthstatestore"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/pendingselectionstore"
@@ -82,14 +82,8 @@ func checkBrokerLinked(account *accountstore.Account) error {
 	return nil
 }
 
-func merrifyAccountStoreError(err error) error {
-	switch {
-	case errors.Is(err, accountstore.ErrAccountNotFound):
-		return merry.Wrap(err).WithHTTPCode(http.StatusNotFound).WithUserMessage("account not found")
-	case errors.Is(err, accountstore.ErrAccountForbidden):
-		return merry.Wrap(err).WithHTTPCode(http.StatusForbidden).WithUserMessage("forbidden")
-	case errors.Is(err, accountstore.ErrBrokerAccountAlreadyLinked):
-		return merry.Wrap(err).WithHTTPCode(http.StatusConflict).WithUserMessage("broker already linked")
-	}
-	return err
+var merrifiedSentinels = httpx.MerrifiedSentinels{
+	{Sentinel: accountstore.ErrAccountNotFound, StatusCode: http.StatusNotFound, UserMessage: "account not found"},
+	{Sentinel: accountstore.ErrAccountForbidden, StatusCode: http.StatusForbidden, UserMessage: "forbidden"},
+	{Sentinel: accountstore.ErrBrokerAccountAlreadyLinked, StatusCode: http.StatusConflict, UserMessage: "broker already linked"},
 }

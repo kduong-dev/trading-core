@@ -66,7 +66,7 @@ func (handler *Handler) CreateBot(responseWriter http.ResponseWriter, request *h
 	ctx = ContextWithAccessTokenFromRequestHeader(ctx, request)
 	account, err := handler.accountServiceClient.GetAccount(ctx, input.AccountID)
 	if err != nil {
-		err = merrifyError(err)
+		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	if !account.BrokerLinked {

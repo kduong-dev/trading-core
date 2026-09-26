@@ -2,14 +2,13 @@ package httpapi
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
 
-	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/pkg/accountservice"
 	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botstore"
 	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/symbolvalidator"
@@ -63,20 +62,12 @@ func NewRouter(input NewRouterInput) *mux.Router {
 	return router
 }
 
-func merrifyError(err error) error {
-	switch {
-	case errors.Is(err, botstore.ErrBotNotFound):
-		return merry.Wrap(err).WithHTTPCode(http.StatusNotFound).WithUserMessage("bot not found")
-	case errors.Is(err, botstore.ErrBotForbidden):
-		return merry.Wrap(err).WithHTTPCode(http.StatusForbidden).WithUserMessage("forbidden")
-	case errors.Is(err, accountservice.ErrAccountNotFound):
-		return merry.Wrap(err).WithHTTPCode(http.StatusNotFound).WithUserMessage("account not found")
-	case errors.Is(err, accountservice.ErrAccountForbidden):
-		return merry.Wrap(err).WithHTTPCode(http.StatusForbidden).WithUserMessage("forbidden")
-	case errors.Is(err, accountservice.ErrServerError):
-		return merry.Wrap(err).WithHTTPCode(http.StatusInternalServerError).WithUserMessage("account service error")
-	}
-	return err
+var merrifiedSentinels = httpx.MerrifiedSentinels{
+	{Sentinel: botstore.ErrBotNotFound, StatusCode: http.StatusNotFound, UserMessage: "bot not found"},
+	{Sentinel: botstore.ErrBotForbidden, StatusCode: http.StatusForbidden, UserMessage: "forbidden"},
+	{Sentinel: accountservice.ErrAccountNotFound, StatusCode: http.StatusNotFound, UserMessage: "account not found"},
+	{Sentinel: accountservice.ErrAccountForbidden, StatusCode: http.StatusForbidden, UserMessage: "forbidden"},
+	{Sentinel: accountservice.ErrServerError, StatusCode: http.StatusInternalServerError, UserMessage: "account service error"},
 }
 
 func ContextWithAccessTokenFromRequestHeader(ctx context.Context, request *http.Request) context.Context {

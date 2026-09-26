@@ -29,7 +29,7 @@ func (handler *Handler) DownloadJob(responseWriter http.ResponseWriter, request 
 	jobID := vars["job_id"]
 	job, err := handler.jobQueryHandler.Get(ctx, jobID)
 	if err != nil {
-		err = merrifyError(err)
+		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	if job.Status != jobstore.JobStatusCompleted {

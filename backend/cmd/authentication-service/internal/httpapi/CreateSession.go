@@ -2,7 +2,6 @@ package httpapi
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"strings"
 	"time"
@@ -10,7 +9,6 @@ import (
 	"github.com/ansel1/merry"
 	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
-	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/userstore"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -41,20 +39,17 @@ func (handler *Handler) CreateSession(responseWriter http.ResponseWriter, reques
 	}
 	input.Email = strings.ToLower(strings.TrimSpace(input.Email))
 	if len(input.Email) == 0 || len(input.Password) == 0 {
-		err = merry.Wrap(err).WithHTTPCode(http.StatusBadRequest).WithUserMessage("email and password are required")
+		err = merry.UserError("email and password are required").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
 	object, err := handler.userStore.GetByEmail(ctx, input.Email)
 	if err != nil {
-		if errors.Is(err, userstore.ErrNotFound) {
-			err = merry.Wrap(err).WithHTTPCode(http.StatusUnauthorized).WithUserMessage("invalid credentials")
-			return
-		}
+		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	isPasswordValid := VerifyPassword(input.Password, object.PasswordHash)
 	if !isPasswordValid {
-		err = merry.Wrap(err).WithHTTPCode(http.StatusUnauthorized).WithUserMessage("invalid credentials")
+		err = merry.New("invalid password").WithHTTPCode(http.StatusUnauthorized).WithUserMessage("invalid credentials")
 		return
 	}
 	token, expiresAt, err := handler.GenerateToken(object)

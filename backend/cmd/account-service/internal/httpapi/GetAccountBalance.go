@@ -24,7 +24,7 @@ func (handler *Handler) GetAccountBalance(responseWriter http.ResponseWriter, re
 		AccountID: accountID,
 	})
 	if err != nil {
-		err = merrifyAccountStoreError(err)
+		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	err = checkBrokerLinked(account)

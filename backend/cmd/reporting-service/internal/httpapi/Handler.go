@@ -1,11 +1,10 @@
 package httpapi
 
 import (
-	"errors"
 	"net/http"
 
-	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
@@ -43,12 +42,7 @@ func NewRouter(input NewRouterInput) *mux.Router {
 	return router
 }
 
-func merrifyError(err error) error {
-	switch {
-	case errors.Is(err, jobstore.ErrJobNotFound):
-		return merry.Wrap(err).WithHTTPCode(http.StatusNotFound).WithUserMessage("job not found")
-	case errors.Is(err, jobstore.ErrJobForbidden):
-		return merry.Wrap(err).WithHTTPCode(http.StatusForbidden).WithUserMessage("forbidden")
-	}
-	return err
+var merrifiedSentinels = httpx.MerrifiedSentinels{
+	{Sentinel: jobstore.ErrJobNotFound, StatusCode: http.StatusNotFound, UserMessage: "job not found"},
+	{Sentinel: jobstore.ErrJobForbidden, StatusCode: http.StatusForbidden, UserMessage: "forbidden"},
 }

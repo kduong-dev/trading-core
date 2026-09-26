@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
 
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/userstore"
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
 	"github.com/kduong-dev/trading-core/backend/internal/authz"
@@ -56,4 +57,9 @@ func (handler *Handler) GenerateToken(user *userstore.User) (string, time.Time, 
 		return "", time.Time{}, err
 	}
 	return signed, expiresAt, nil
+}
+
+var merrifiedSentinels = httpx.MerrifiedSentinels{
+	{Sentinel: userstore.ErrNotFound, StatusCode: http.StatusUnauthorized, UserMessage: "invalid credentials"},
+	{Sentinel: userstore.ErrAlreadyExists, StatusCode: http.StatusConflict, UserMessage: "user already exists"},
 }
