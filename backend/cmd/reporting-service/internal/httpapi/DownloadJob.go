@@ -7,7 +7,6 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
@@ -51,8 +50,8 @@ func (api *API) DownloadJob(responseWriter http.ResponseWriter, request *http.Re
 	if download.ContentDisposition != "" {
 		responseWriter.Header().Set("Content-Disposition", download.ContentDisposition)
 	}
-	_, err = io.Copy(responseWriter, download.Body)
-	fatal.OnErrorUnlessDone(ctx, err)
+	// The response has started, so a copy error can only mean the client or upstream has gone.
+	_, _ = io.Copy(responseWriter, download.Body)
 }
 
 // extractFileID parses the file ID from a storage-service path of the form
