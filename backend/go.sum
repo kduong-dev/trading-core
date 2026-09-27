@@ -33,8 +33,8 @@ github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aN
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/jtolds/gls v4.20.0+incompatible h1:xdiiI2gbIgH/gLH7ADydsJ1uDOEzR8yvV7C0MuV77Wo=
 github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVYBRgL+9YlvaHOwJU=
-github.com/kduong-dev/goutil v0.4.0 h1:PHLpXIXSjDUeLrQ/FX3RxBOZazcQ4CAIeucJNKbN62k=
-github.com/kduong-dev/goutil v0.4.0/go.mod h1:K4dkU3XHfRws017jeuad23VjhwY6WLL+O1W55ixBPuk=
+github.com/kduong-dev/goutil v0.4.1 h1:wwp+aI+PGr7K58OvB/13DXYdKOAu9s7M9wqzPpQq+ng=
+github.com/kduong-dev/goutil v0.4.1/go.mod h1:K4dkU3XHfRws017jeuad23VjhwY6WLL+O1W55ixBPuk=
 github.com/kduong-dev/storage-service v0.3.0 h1:TQgsrdt0TuC4vvZCEeZjKvjWqx0cBEaA+z0KqBH3CeQ=
 github.com/kduong-dev/storage-service v0.3.0/go.mod h1:3TPmtZWiWGYXs8exk2G642/4HNeKQD6495UgM8nwrUU=
 github.com/klauspost/cpuid/v2 v2.2.10 h1:tBs3QSyvjDyFTq3uoc/9xFpCuOsJQFNPiAhYdw2skhE=
