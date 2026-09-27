@@ -10,14 +10,7 @@ import (
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
 )
 
-type Handler struct {
-	jobCommandHandler jobstore.CommandHandler
-	jobQueryHandler   jobstore.QueryHandler
-	storageClient     storageservice.Client
-	enqueueJob        func(job *jobstore.Job)
-}
-
-type NewRouterInput struct {
+type NewHandlerInput struct {
 	AuthMiddleware    *auth.Middleware
 	JobCommandHandler jobstore.CommandHandler
 	JobQueryHandler   jobstore.QueryHandler
@@ -25,24 +18,19 @@ type NewRouterInput struct {
 	EnqueueJob        func(job *jobstore.Job)
 }
 
-func NewRouter(input NewRouterInput) *mux.Router {
-	handler := &Handler{
+func NewHandler(input NewHandlerInput) http.Handler {
+	api := &API{
 		jobCommandHandler: input.JobCommandHandler,
 		jobQueryHandler:   input.JobQueryHandler,
 		storageClient:     input.StorageClient,
 		enqueueJob:        input.EnqueueJob,
 	}
 	router := mux.NewRouter().StrictSlash(true)
-	reportV1Router := router.PathPrefix("/reports/v1").Subrouter()
-	reportV1Router.Use(input.AuthMiddleware.Handle)
-	reportV1Router.HandleFunc("/jobs", handler.CreateJob).Methods(http.MethodPost).Name("CreateJob")
-	reportV1Router.HandleFunc("/jobs", handler.ListJobs).Methods(http.MethodGet).Name("ListJobs")
-	reportV1Router.HandleFunc("/jobs/{job_id}", handler.GetJob).Methods(http.MethodGet).Name("GetJob")
-	reportV1Router.HandleFunc("/jobs/{job_id}/download", handler.DownloadJob).Methods(http.MethodGet).Name("DownloadJob")
-	return router
-}
-
-var merrifiedSentinels = httpx.MerrifiedSentinels{
-	{Sentinel: jobstore.ErrJobNotFound, StatusCode: http.StatusNotFound, UserMessage: "job not found"},
-	{Sentinel: jobstore.ErrJobForbidden, StatusCode: http.StatusForbidden, UserMessage: "forbidden"},
+	publicRouter := router.PathPrefix("/reports/v1").Subrouter()
+	publicRouter.Use(input.AuthMiddleware.Handle)
+	publicRouter.HandleFunc("/jobs", api.CreateJob).Methods(http.MethodPost).Name("CreateJob")
+	publicRouter.HandleFunc("/jobs", api.ListJobs).Methods(http.MethodGet).Name("ListJobs")
+	publicRouter.HandleFunc("/jobs/{job_id}", api.GetJob).Methods(http.MethodGet).Name("GetJob")
+	publicRouter.HandleFunc("/jobs/{job_id}/download", api.DownloadJob).Methods(http.MethodGet).Name("DownloadJob")
+	return httpx.HandlerWithCORS(router)
 }

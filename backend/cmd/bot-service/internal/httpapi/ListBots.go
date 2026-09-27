@@ -1,13 +1,12 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/kduong-dev/goutil/httpx"
 )
 
-func (handler *Handler) ListBots(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) ListBots(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -15,10 +14,9 @@ func (handler *Handler) ListBots(responseWriter http.ResponseWriter, request *ht
 		}
 	}()
 	ctx := request.Context()
-	bots, err := handler.botStoreQueryHandler.List(ctx)
+	bots, err := api.botStoreQueryHandler.List(ctx)
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(responseWriter).Encode(bots)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, bots)
 }

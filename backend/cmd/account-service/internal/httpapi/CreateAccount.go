@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/kduong-dev/goutil/fatal"
@@ -19,7 +18,7 @@ type CreateAccountOutput struct {
 	AccountName string `json:"account_name"`
 }
 
-func (handler *Handler) CreateAccount(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) CreateAccount(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -33,7 +32,7 @@ func (handler *Handler) CreateAccount(responseWriter http.ResponseWriter, reques
 		return
 	}
 	accountID := uuid.NewV4().String()
-	err = handler.accountStoreCommandHandler.Create(ctx, accountstore.CreateInput{
+	err = api.accountStoreCommandHandler.Create(ctx, accountstore.CreateInput{
 		AccountID:   accountID,
 		AccountName: input.AccountName,
 	})
@@ -42,8 +41,5 @@ func (handler *Handler) CreateAccount(responseWriter http.ResponseWriter, reques
 		AccountID:   accountID,
 		AccountName: input.AccountName,
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(responseWriter).Encode(&output)
-	fatal.OnErrorUnlessDone(ctx, err)
+	httpx.SendJSONResponse(responseWriter, http.StatusCreated, output)
 }

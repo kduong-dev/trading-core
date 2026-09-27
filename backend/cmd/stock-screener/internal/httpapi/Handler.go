@@ -4,35 +4,31 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/stock-screener/internal/fetchsentiment"
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
 	"github.com/kduong-dev/trading-core/backend/internal/broker/alpaca"
 )
 
-type Handler struct {
-	alpacaClient           alpaca.Client
-	fetchSentimentStrategy fetchsentiment.Strategy
-}
-
-type NewRouterInput struct {
-	AlpacaClient           alpaca.Client
+type NewHandlerInput struct {
 	AuthMiddleware         *auth.Middleware
+	AlpacaClient           alpaca.Client
 	FetchSentimentStrategy fetchsentiment.Strategy
 }
 
-func NewRouter(input NewRouterInput) *mux.Router {
-	handler := &Handler{
+func NewHandler(input NewHandlerInput) http.Handler {
+	api := &API{
 		alpacaClient:           input.AlpacaClient,
 		fetchSentimentStrategy: input.FetchSentimentStrategy,
 	}
 	router := mux.NewRouter().StrictSlash(true)
-	stockScreenerV1Router := router.PathPrefix("/stock-screener/v1").Subrouter()
-	stockScreenerV1Router.Use(input.AuthMiddleware.Handle)
-	stockScreenerV1Router.HandleFunc("/most-actives", handler.GetActiveStocks).Methods(http.MethodGet).Name("GetActiveStocks")
-	stockScreenerV1Router.HandleFunc("/movers", handler.GetTopStockMovers).Methods(http.MethodGet).Name("GetTopStockMovers")
-	stockScreenerV1Router.HandleFunc("/news", handler.GetStockNews).Methods(http.MethodGet).Name("GetStockNews")
-	stockScreenerV1Router.HandleFunc("/sentiments/fear-greed", handler.GetFearGreedIndex).Methods(http.MethodGet).Name("GetFearGreedIndex")
-	stockScreenerV1Router.HandleFunc("/stocks/{symbol}/bars", handler.GetStockBars).Methods(http.MethodGet).Name("GetStockBars")
-	stockScreenerV1Router.HandleFunc("/stocks/{symbol}/snapshot", handler.GetStockSnapshot).Methods(http.MethodGet).Name("GetStockSnapshot")
-	return router
+	publicRouter := router.PathPrefix("/stock-screener/v1").Subrouter()
+	publicRouter.Use(input.AuthMiddleware.Handle)
+	publicRouter.HandleFunc("/most-actives", api.GetActiveStocks).Methods(http.MethodGet).Name("GetActiveStocks")
+	publicRouter.HandleFunc("/movers", api.GetTopStockMovers).Methods(http.MethodGet).Name("GetTopStockMovers")
+	publicRouter.HandleFunc("/news", api.GetStockNews).Methods(http.MethodGet).Name("GetStockNews")
+	publicRouter.HandleFunc("/sentiments/fear-greed", api.GetFearGreedIndex).Methods(http.MethodGet).Name("GetFearGreedIndex")
+	publicRouter.HandleFunc("/stocks/{symbol}/bars", api.GetStockBars).Methods(http.MethodGet).Name("GetStockBars")
+	publicRouter.HandleFunc("/stocks/{symbol}/snapshot", api.GetStockSnapshot).Methods(http.MethodGet).Name("GetStockSnapshot")
+	return httpx.HandlerWithCORS(router)
 }

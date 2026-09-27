@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
 	"time"
@@ -12,7 +11,7 @@ import (
 	"github.com/kduong-dev/goutil/httpx"
 )
 
-func (handler *Handler) RefreshSession(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) RefreshSession(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -36,19 +35,19 @@ func (handler *Handler) RefreshSession(responseWriter http.ResponseWriter, reque
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, merry.New("unexpected signing method").WithHTTPCode(http.StatusUnauthorized).WithUserMessage("unauthorized")
 		}
-		return handler.tokenSecret, nil
+		return api.tokenSecret, nil
 	})
 	if err != nil {
 		err = merry.Wrap(err).WithHTTPCode(http.StatusUnauthorized).WithUserMessage("unauthorized")
 		return
 	}
 	userID := claims.Subject
-	object, err := handler.userStore.GetByID(ctx, userID)
+	object, err := api.userStore.GetByID(ctx, userID)
 	if err != nil {
 		err = merry.Wrap(err).WithHTTPCode(http.StatusUnauthorized).WithUserMessage("unauthorized")
 		return
 	}
-	token, expiresAt, err := handler.GenerateToken(object)
+	token, expiresAt, err := api.GenerateToken(object)
 	fatal.OnError(err)
 	output := CreateSessionOutput{
 		AccessToken: token,
@@ -57,7 +56,5 @@ func (handler *Handler) RefreshSession(responseWriter http.ResponseWriter, reque
 		UserID:      object.ID,
 		Email:       object.Email,
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(&output)
-	fatal.OnErrorUnlessDone(ctx, err)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, output)
 }

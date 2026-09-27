@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
@@ -14,7 +13,7 @@ import (
 const defaultPageSize = 31
 const maxPageSize = 366
 
-func (handler *Handler) ListEntries(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) ListEntries(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -55,7 +54,7 @@ func (handler *Handler) ListEntries(responseWriter http.ResponseWriter, request 
 		return
 	}
 
-	result, err := handler.entryQueryHandler.List(ctx, entrystore.ListInput{
+	result, err := api.entryQueryHandler.List(ctx, entrystore.ListInput{
 		From:     from,
 		To:       to,
 		Page:     page,
@@ -64,8 +63,7 @@ func (handler *Handler) ListEntries(responseWriter http.ResponseWriter, request 
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(responseWriter).Encode(result)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, result)
 }
 
 func parseQueryInt(request *http.Request, key string, defaultValue int) (int, error) {

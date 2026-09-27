@@ -5,7 +5,6 @@ import (
 
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/entrystore"
 	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/httpapi"
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
@@ -26,11 +25,11 @@ func main() {
 			Log: log,
 		}),
 	})
-	router := httpapi.NewRouter(httpapi.NewRouterInput{
+	handler := httpapi.NewHandler(httpapi.NewHandlerInput{
 		AuthMiddleware:      auth.MiddlewareFromEnv(auth.AudienceJournalService),
 		EntryCommandHandler: commandHandler,
 		EntryQueryHandler:   queryHandler,
 	})
-	err = http.ListenAndServe(":8084", httpx.HandlerWithCORS(router))
+	err = http.ListenAndServe(":8084", handler)
 	fatal.OnError(err)
 }

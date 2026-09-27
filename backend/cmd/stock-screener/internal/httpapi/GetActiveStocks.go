@@ -1,16 +1,14 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/internal/broker/alpaca"
 )
 
-func (handler *Handler) GetActiveStocks(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) GetActiveStocks(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -30,14 +28,12 @@ func (handler *Handler) GetActiveStocks(responseWriter http.ResponseWriter, requ
 			return
 		}
 	}
-	output, err := handler.alpacaClient.GetActiveStocks(ctx, alpaca.GetActiveStocksInput{
+	output, err := api.alpacaClient.GetActiveStocks(ctx, alpaca.GetActiveStocksInput{
 		RankBy: rankBy,
 		Limit:  limit,
 	})
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(output)
-	fatal.OnErrorUnlessDone(ctx, err)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, output)
 }

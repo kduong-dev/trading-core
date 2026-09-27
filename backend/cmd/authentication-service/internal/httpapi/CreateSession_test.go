@@ -14,18 +14,18 @@ import (
 )
 
 func TestCreateSession(t *testing.T) {
-	Convey("Given the authentication router with a registered user", t, func() {
-		router := httpapi.NewRouter(httpapi.NewRouterInput{
+	Convey("Given the authentication handler with a registered user", t, func() {
+		handler := httpapi.NewHandler(httpapi.NewHandlerInput{
 			UserStore:   userstore.NewInMemoryStore(),
 			TokenSecret: []byte("test-secret"),
 			ExpiryTTL:   time.Hour,
 		})
 		body, _ := json.Marshal(httpapi.CreateUserInput{Email: "user@example.com", Password: "a-long-password"})
-		router.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodPost, "/auth/v1/users", bytes.NewReader(body)))
+		handler.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodPost, "/auth/v1/users", bytes.NewReader(body)))
 		createSession := func(input httpapi.CreateSessionInput) *httptest.ResponseRecorder {
 			body, _ := json.Marshal(input)
 			recorder := httptest.NewRecorder()
-			router.ServeHTTP(recorder, httptest.NewRequest(http.MethodPost, "/auth/v1/sessions", bytes.NewReader(body)))
+			handler.ServeHTTP(recorder, httptest.NewRequest(http.MethodPost, "/auth/v1/sessions", bytes.NewReader(body)))
 			return recorder
 		}
 

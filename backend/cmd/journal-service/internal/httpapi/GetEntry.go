@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -10,7 +9,7 @@ import (
 	"github.com/kduong-dev/goutil/httpx"
 )
 
-func (handler *Handler) GetEntry(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) GetEntry(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -24,11 +23,10 @@ func (handler *Handler) GetEntry(responseWriter http.ResponseWriter, request *ht
 		err = merry.UserError("date must be YYYY-MM-DD").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
-	entry, err := handler.entryQueryHandler.Get(ctx, date)
+	entry, err := api.entryQueryHandler.Get(ctx, date)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(responseWriter).Encode(entry)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, entry)
 }

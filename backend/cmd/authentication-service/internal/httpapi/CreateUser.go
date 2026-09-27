@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -11,7 +10,6 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/userstore"
 )
@@ -34,7 +32,7 @@ type CreateUserOutput struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func (handler *Handler) CreateUser(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) CreateUser(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -71,7 +69,7 @@ func (handler *Handler) CreateUser(responseWriter http.ResponseWriter, request *
 		PasswordHash: passwordHash,
 		CreatedAt:    time.Now().UTC(),
 	}
-	err = handler.userStore.Put(ctx, object)
+	err = api.userStore.Put(ctx, object)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
@@ -81,9 +79,7 @@ func (handler *Handler) CreateUser(responseWriter http.ResponseWriter, request *
 		Email:     object.Email,
 		CreatedAt: object.CreatedAt,
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(&output)
-	fatal.OnErrorUnlessDone(ctx, err)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, output)
 }
 
 func HashPassword(password string) (hashPassword string, err error) {

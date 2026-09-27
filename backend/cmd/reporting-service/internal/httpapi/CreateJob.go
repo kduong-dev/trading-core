@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -26,7 +25,7 @@ func (input *EnqueueJobInput) Validate() error {
 	return nil
 }
 
-func (handler *Handler) CreateJob(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) CreateJob(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -57,14 +56,12 @@ func (handler *Handler) CreateJob(responseWriter http.ResponseWriter, request *h
 		CreatedAt:  now,
 		UpdatedAt:  now,
 	}
-	err = handler.jobCommandHandler.CreateJob(ctx, job)
+	err = api.jobCommandHandler.CreateJob(ctx, job)
 	if err != nil {
 		return
 	}
 	// Notify the actor non-blocking; the actor's channel is buffered and the
 	// recovery pass on restart handles any jobs that don't make it through.
-	handler.enqueueJob(job)
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(responseWriter).Encode(job)
+	api.enqueueJob(job)
+	httpx.SendJSONResponse(responseWriter, http.StatusAccepted, job)
 }

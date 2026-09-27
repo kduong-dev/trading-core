@@ -15,9 +15,9 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-	Convey("Given the authentication router", t, func() {
+	Convey("Given the authentication handler", t, func() {
 		userStore := userstore.NewInMemoryStore()
-		router := httpapi.NewRouter(httpapi.NewRouterInput{
+		handler := httpapi.NewHandler(httpapi.NewHandlerInput{
 			UserStore:   userStore,
 			TokenSecret: []byte("test-secret"),
 			ExpiryTTL:   time.Hour,
@@ -27,7 +27,7 @@ func TestCreateUser(t *testing.T) {
 			body, _ := json.Marshal(httpapi.CreateUserInput{Email: " New.User@Example.com ", Password: "a-long-password"})
 			request := httptest.NewRequest(http.MethodPost, "/auth/v1/users", bytes.NewReader(body))
 			recorder := httptest.NewRecorder()
-			router.ServeHTTP(recorder, request)
+			handler.ServeHTTP(recorder, request)
 
 			Convey("Then it responds with the created user", func() {
 				So(recorder.Code, ShouldEqual, http.StatusOK)
@@ -64,7 +64,7 @@ func TestCreateUser(t *testing.T) {
 				body, _ := json.Marshal(input)
 				request := httptest.NewRequest(http.MethodPost, "/auth/v1/users", bytes.NewReader(body))
 				recorder := httptest.NewRecorder()
-				router.ServeHTTP(recorder, request)
+				handler.ServeHTTP(recorder, request)
 
 				Convey("Then it responds with bad request and stores nothing", func() {
 					So(recorder.Code, ShouldEqual, http.StatusBadRequest)
@@ -78,7 +78,7 @@ func TestCreateUser(t *testing.T) {
 			body, _ := json.Marshal(httpapi.CreateUserInput{Email: "eight@example.com", Password: "eight888"})
 			request := httptest.NewRequest(http.MethodPost, "/auth/v1/users", bytes.NewReader(body))
 			recorder := httptest.NewRecorder()
-			router.ServeHTTP(recorder, request)
+			handler.ServeHTTP(recorder, request)
 
 			Convey("Then it is accepted", func() {
 				So(recorder.Code, ShouldEqual, http.StatusOK)

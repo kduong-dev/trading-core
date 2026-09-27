@@ -1,13 +1,11 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/oauthstatestore"
@@ -23,7 +21,7 @@ type StartBrokerSelectionOutput struct {
 	AuthorizationURL string `json:"authorization_url"`
 }
 
-func (handler *Handler) StartBrokerSelection(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) StartBrokerSelection(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -42,7 +40,7 @@ func (handler *Handler) StartBrokerSelection(responseWriter http.ResponseWriter,
 		err = merry.UserError("broker is required").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
-	_, err = handler.accountStoreQueryHandler.Get(ctx, accountstore.GetInput{
+	_, err = api.accountStoreQueryHandler.Get(ctx, accountstore.GetInput{
 		AccountID: accountID,
 	})
 	if err != nil {
@@ -53,20 +51,18 @@ func (handler *Handler) StartBrokerSelection(responseWriter http.ResponseWriter,
 	if err != nil {
 		return
 	}
-	authorizationClient, err := handler.brokerOnBoardingClientFactory.GetAuthorizationClient(input.Broker)
+	authorizationClient, err := api.brokerOnBoardingClientFactory.GetAuthorizationClient(input.Broker)
 	if err != nil {
 		err = merry.Wrap(err).WithHTTPCode(http.StatusBadRequest).WithUserMessage("unsupported broker")
 		return
 	}
-	handler.oauthStateStore.Put(stateToken, oauthstatestore.Entry{
+	api.oauthStateStore.Put(stateToken, oauthstatestore.Entry{
 		AccountID: accountID,
 		UserID:    userID,
 		Broker:    input.Broker,
 		ExpiresAt: time.Now().Add(10 * time.Minute),
 	})
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(StartBrokerSelectionOutput{
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, StartBrokerSelectionOutput{
 		AuthorizationURL: authorizationClient.BuildAuthorizationURL(stateToken),
 	})
-	fatal.OnErrorUnlessDone(ctx, err)
 }

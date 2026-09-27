@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
 
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/httpapi"
@@ -36,7 +35,7 @@ func main() {
 		broker.AccountTypeTastyTrade:        tastyTradeCredentials,
 		broker.AccountTypeTastyTradeSandbox: tastyTradeSandboxCredentials,
 	}
-	router := httpapi.NewRouter(httpapi.NewRouterInput{
+	handler := httpapi.NewHandler(httpapi.NewHandlerInput{
 		OAuthStateStore:       oauthstatestore.NewInMemory(),
 		PendingSelectionStore: pendingselectionstore.NewInMemory(),
 		AccountStoreCommandHandler: accountstore.NewCommandHandlerThreadSafeDecorator(accountstore.NewCommandHandlerThreadSafeDecoratorInput{
@@ -67,7 +66,7 @@ func main() {
 		BackendRedirectURI: authorizationRedirectURI.String(),
 		FrontendBaseURL:    config.EnvStringOrFatal("FRONTEND_BASE_URL"),
 	})
-	http.ListenAndServe(":9000", httpx.HandlerWithCORS(router))
+	http.ListenAndServe(":9000", handler)
 }
 
 func LoadTastyTradeConfiguration(credentialsByType map[string]auth.Credentials, brokerType string) (auth.Credentials, *url.URL, *auth.TastyTradeTokenManager) {

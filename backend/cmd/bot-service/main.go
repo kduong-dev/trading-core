@@ -9,7 +9,6 @@ import (
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/pkg/accountservice"
 	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botstore"
 	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botsync"
@@ -71,7 +70,7 @@ func main() {
 		})
 		fatal.OnError(err)
 	}()
-	router := httpapi.NewRouter(httpapi.NewRouterInput{
+	handler := httpapi.NewHandler(httpapi.NewHandlerInput{
 		AuthMiddleware:       auth.MiddlewareFromEnv(auth.AudienceBotService),
 		AccountServiceClient: accountservice.ClientFromEnv(),
 		SymbolValidator:      symbolValidator,
@@ -88,7 +87,7 @@ func main() {
 			}),
 		}),
 	})
-	err = http.ListenAndServe(":8081", httpx.HandlerWithCORS(router))
+	err = http.ListenAndServe(":8081", handler)
 	fatal.OnError(err)
 }
 

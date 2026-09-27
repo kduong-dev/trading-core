@@ -1,14 +1,12 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 )
 
-func (handler *Handler) ListAccounts(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) ListAccounts(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -16,11 +14,9 @@ func (handler *Handler) ListAccounts(responseWriter http.ResponseWriter, request
 		}
 	}()
 	ctx := request.Context()
-	accounts, err := handler.accountStoreQueryHandler.List(ctx)
+	accounts, err := api.accountStoreQueryHandler.List(ctx)
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(accounts)
-	fatal.OnErrorUnlessDone(ctx, err)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, accounts)
 }

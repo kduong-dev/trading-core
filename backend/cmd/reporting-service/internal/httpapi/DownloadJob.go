@@ -14,7 +14,7 @@ import (
 	"github.com/kduong-dev/trading-core/backend/internal/authz"
 )
 
-func (handler *Handler) DownloadJob(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) DownloadJob(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -27,7 +27,7 @@ func (handler *Handler) DownloadJob(responseWriter http.ResponseWriter, request 
 	}
 	vars := mux.Vars(request)
 	jobID := vars["job_id"]
-	job, err := handler.jobQueryHandler.Get(ctx, jobID)
+	job, err := api.jobQueryHandler.Get(ctx, jobID)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
@@ -43,7 +43,7 @@ func (handler *Handler) DownloadJob(responseWriter http.ResponseWriter, request 
 	}
 	// jobQueryHandler.Get has already enforced that the caller owns this job;
 	// storage-service only knows about trading-core as a whole.
-	download, err := handler.storageClient.DownloadFile(ctx, storageservice.DownloadFileInput{FileID: fileID})
+	download, err := api.storageClient.DownloadFile(ctx, storageservice.DownloadFileInput{FileID: fileID})
 	if err != nil {
 		return
 	}

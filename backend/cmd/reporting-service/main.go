@@ -8,7 +8,6 @@ import (
 	"github.com/kduong-dev/goutil/config"
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/httpapi"
 	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
@@ -45,13 +44,13 @@ func main() {
 	actor.CatchUp(ctx)
 	actor.CompleteCatchup(ctx)
 	go actor.Run(ctx)
-	router := httpapi.NewRouter(httpapi.NewRouterInput{
+	handler := httpapi.NewHandler(httpapi.NewHandlerInput{
 		AuthMiddleware:    auth.MiddlewareFromEnv(auth.AudienceReportingService),
 		JobCommandHandler: commandHandler,
 		JobQueryHandler:   queryHandler,
 		StorageClient:     storageClient,
 		EnqueueJob:        actor.Notify,
 	})
-	err = http.ListenAndServe(":8082", httpx.HandlerWithCORS(router))
+	err = http.ListenAndServe(":8082", handler)
 	fatal.OnError(err)
 }

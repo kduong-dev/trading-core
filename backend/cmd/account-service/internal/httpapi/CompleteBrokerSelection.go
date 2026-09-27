@@ -1,12 +1,10 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"slices"
 
 	"github.com/ansel1/merry"
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
 	"github.com/kduong-dev/trading-core/backend/internal/broker"
@@ -23,7 +21,7 @@ type CompleteBrokerSelectionOutput struct {
 	BrokerAccount broker.Account `json:"broker_account"`
 }
 
-func (handler *Handler) CompleteBrokerSelection(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) CompleteBrokerSelection(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -40,7 +38,7 @@ func (handler *Handler) CompleteBrokerSelection(responseWriter http.ResponseWrit
 		err = merry.UserError("pending_token and broker_account_id are required").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
-	entry, ok := handler.pendingSelectionStore.Get(input.PendingToken)
+	entry, ok := api.pendingSelectionStore.Get(input.PendingToken)
 	if !ok {
 		err = merry.UserError("pending broker selection not found").WithHTTPCode(http.StatusNotFound)
 		return
@@ -59,7 +57,7 @@ func (handler *Handler) CompleteBrokerSelection(responseWriter http.ResponseWrit
 		ID:   input.BrokerAccountID,
 	}
 	ctx = contextx.WithUserID(ctx, entry.UserID)
-	err = handler.accountStoreCommandHandler.LinkBrokerAccount(ctx, accountstore.LinkBrokerAccountInput{
+	err = api.accountStoreCommandHandler.LinkBrokerAccount(ctx, accountstore.LinkBrokerAccountInput{
 		AccountID:     entry.AccountID,
 		BrokerAccount: brokerAccount,
 	})
@@ -67,11 +65,9 @@ func (handler *Handler) CompleteBrokerSelection(responseWriter http.ResponseWrit
 		err = merrifiedSentinels.Merrify(err)
 		return
 	}
-	handler.pendingSelectionStore.Delete(input.PendingToken)
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(CompleteBrokerSelectionOutput{
+	api.pendingSelectionStore.Delete(input.PendingToken)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, CompleteBrokerSelectionOutput{
 		AccountID:     entry.AccountID,
 		BrokerAccount: *brokerAccount,
 	})
-	fatal.OnErrorUnlessDone(ctx, err)
 }

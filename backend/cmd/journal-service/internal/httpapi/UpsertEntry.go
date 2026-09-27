@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -28,7 +27,7 @@ func (input *UpsertEntryInput) Validate() error {
 	return nil
 }
 
-func (handler *Handler) UpsertEntry(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) UpsertEntry(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -61,11 +60,9 @@ func (handler *Handler) UpsertEntry(responseWriter http.ResponseWriter, request 
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
-	err = handler.entryCommandHandler.UpsertEntry(ctx, entry)
+	err = api.entryCommandHandler.UpsertEntry(ctx, entry)
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(responseWriter).Encode(entry)
+	httpx.SendJSONResponse(responseWriter, http.StatusAccepted, entry)
 }

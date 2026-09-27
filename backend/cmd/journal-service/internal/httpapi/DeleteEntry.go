@@ -10,7 +10,7 @@ import (
 	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/entrystore"
 )
 
-func (handler *Handler) DeleteEntry(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) DeleteEntry(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -25,7 +25,7 @@ func (handler *Handler) DeleteEntry(responseWriter http.ResponseWriter, request 
 		return
 	}
 	now := time.Now().UTC().Format(time.RFC3339)
-	err = handler.entryCommandHandler.DeleteEntry(ctx, entrystore.DeleteEntryInput{
+	err = api.entryCommandHandler.DeleteEntry(ctx, entrystore.DeleteEntryInput{
 		Date:      date,
 		UpdatedAt: now,
 	})

@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"errors"
 	"math"
 	"net/http"
@@ -46,7 +45,7 @@ func (input *CreateBotInput) Validate() (err error) {
 	return
 }
 
-func (handler *Handler) CreateBot(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) CreateBot(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -64,7 +63,7 @@ func (handler *Handler) CreateBot(responseWriter http.ResponseWriter, request *h
 		return
 	}
 	ctx = ContextWithAccessTokenFromRequestHeader(ctx, request)
-	account, err := handler.accountServiceClient.GetAccount(ctx, input.AccountID)
+	account, err := api.accountServiceClient.GetAccount(ctx, input.AccountID)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
@@ -77,7 +76,7 @@ func (handler *Handler) CreateBot(responseWriter http.ResponseWriter, request *h
 		err = merry.UserError("account broker details are missing").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
-	err = handler.symbolValidator.Validate(ctx, account.Broker.Type, input.Symbol)
+	err = api.symbolValidator.Validate(ctx, account.Broker.Type, input.Symbol)
 	if err != nil {
 		switch {
 		case errors.Is(err, symbolvalidator.ErrSymbolNotTradableForBroker):
@@ -101,11 +100,9 @@ func (handler *Handler) CreateBot(responseWriter http.ResponseWriter, request *h
 		Status:            botstore.BotStatusStopped,
 		CreatedAt:         time.Now().UTC().Format(time.RFC3339),
 	}
-	err = handler.botStoreCommandHandler.Create(ctx, bot)
+	err = api.botStoreCommandHandler.Create(ctx, bot)
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.WriteHeader(http.StatusCreated)
-	json.NewEncoder(responseWriter).Encode(bot)
+	httpx.SendJSONResponse(responseWriter, http.StatusCreated, bot)
 }

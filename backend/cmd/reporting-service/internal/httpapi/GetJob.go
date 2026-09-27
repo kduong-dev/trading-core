@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -9,7 +8,7 @@ import (
 	"github.com/kduong-dev/trading-core/backend/internal/authz"
 )
 
-func (handler *Handler) GetJob(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) GetJob(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -22,11 +21,10 @@ func (handler *Handler) GetJob(responseWriter http.ResponseWriter, request *http
 	}
 	vars := mux.Vars(request)
 	jobID := vars["job_id"]
-	job, err := handler.jobQueryHandler.Get(ctx, jobID)
+	job, err := api.jobQueryHandler.Get(ctx, jobID)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(responseWriter).Encode(job)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, job)
 }

@@ -9,21 +9,21 @@ import (
 	"github.com/kduong-dev/trading-core/backend/internal/contextx"
 )
 
-func (handler *Handler) HandleAuthorizationCallback(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) HandleAuthorizationCallback(responseWriter http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
-	frontendAccountURL := handler.frontendBaseURL + "/account"
+	frontendAccountURL := api.frontendBaseURL + "/account"
 	stateToken := request.URL.Query().Get("state")
 	code := request.URL.Query().Get("code")
 	if stateToken == "" || code == "" {
 		http.Redirect(responseWriter, request, frontendAccountURL+"?oauth_error=missing_parameters", http.StatusFound)
 		return
 	}
-	stateEntry, ok := handler.oauthStateStore.Pop(stateToken)
+	stateEntry, ok := api.oauthStateStore.Pop(stateToken)
 	if !ok {
 		http.Redirect(responseWriter, request, frontendAccountURL+"?oauth_error=invalid_state", http.StatusFound)
 		return
 	}
-	authorizationClient, err := handler.brokerOnBoardingClientFactory.GetAuthorizationClient(stateEntry.Broker)
+	authorizationClient, err := api.brokerOnBoardingClientFactory.GetAuthorizationClient(stateEntry.Broker)
 	if err != nil {
 		http.Redirect(responseWriter, request, frontendAccountURL+"?oauth_error=unsupported_broker", http.StatusFound)
 		return
@@ -34,7 +34,7 @@ func (handler *Handler) HandleAuthorizationCallback(responseWriter http.Response
 		return
 	}
 	ctx = contextx.WithAccessToken(ctx, tokenOutput.AccessToken)
-	accountDiscoveryClient, err := handler.brokerOnBoardingClientFactory.GetAccountDiscoveryClient(ctx, stateEntry.Broker)
+	accountDiscoveryClient, err := api.brokerOnBoardingClientFactory.GetAccountDiscoveryClient(ctx, stateEntry.Broker)
 	if err != nil {
 		http.Redirect(responseWriter, request, frontendAccountURL+"?oauth_error=unsupported_broker", http.StatusFound)
 		return
@@ -49,7 +49,7 @@ func (handler *Handler) HandleAuthorizationCallback(responseWriter http.Response
 		http.Redirect(responseWriter, request, frontendAccountURL+"?oauth_error=pending_token_failed", http.StatusFound)
 		return
 	}
-	handler.pendingSelectionStore.Put(pendingToken, pendingselectionstore.Entry{
+	api.pendingSelectionStore.Put(pendingToken, pendingselectionstore.Entry{
 		AccountID:      stateEntry.AccountID,
 		UserID:         stateEntry.UserID,
 		Broker:         stateEntry.Broker,

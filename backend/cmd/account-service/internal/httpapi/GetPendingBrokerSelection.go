@@ -1,11 +1,9 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/ansel1/merry"
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/internal/broker"
 	"github.com/kduong-dev/trading-core/backend/internal/contextx"
@@ -16,7 +14,7 @@ type GetPendingBrokerSelectionOutput struct {
 	BrokerAccounts []string           `json:"broker_accounts"`
 }
 
-func (handler *Handler) GetPendingBrokerSelection(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) GetPendingBrokerSelection(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -30,7 +28,7 @@ func (handler *Handler) GetPendingBrokerSelection(responseWriter http.ResponseWr
 		err = merry.UserError("pending_token query parameter is required").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
-	entry, ok := handler.pendingSelectionStore.Get(pendingToken)
+	entry, ok := api.pendingSelectionStore.Get(pendingToken)
 	if !ok {
 		err = merry.UserError("pending broker selection not found").WithHTTPCode(http.StatusNotFound)
 		return
@@ -39,10 +37,8 @@ func (handler *Handler) GetPendingBrokerSelection(responseWriter http.ResponseWr
 		err = merry.UserError("forbidden").WithHTTPCode(http.StatusForbidden)
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(GetPendingBrokerSelectionOutput{
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, GetPendingBrokerSelectionOutput{
 		Broker:         entry.Broker,
 		BrokerAccounts: entry.BrokerAccounts,
 	})
-	fatal.OnErrorUnlessDone(ctx, err)
 }

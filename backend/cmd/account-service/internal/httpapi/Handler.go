@@ -1,13 +1,9 @@
 package httpapi
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"net/http"
 
-	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
-
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/oauthstatestore"
@@ -16,31 +12,20 @@ import (
 	"github.com/kduong-dev/trading-core/backend/internal/broker"
 )
 
-type Handler struct {
-	oauthStateStore               oauthstatestore.Store
-	pendingSelectionStore         pendingselectionstore.Store
-	accountStoreCommandHandler    accountstore.CommandHandler
-	accountStoreQueryHandler      accountstore.QueryHandler
-	brokerAccountClientFactory    broker.AccountClientFactory
-	brokerOnBoardingClientFactory broker.OnBoardingClientFactory
-	backendRedirectURI            string
-	frontendBaseURL               string
-}
-
-type NewRouterInput struct {
+type NewHandlerInput struct {
+	AuthMiddleware                *auth.Middleware
 	OAuthStateStore               oauthstatestore.Store
 	PendingSelectionStore         pendingselectionstore.Store
 	AccountStoreCommandHandler    accountstore.CommandHandler
 	AccountStoreQueryHandler      accountstore.QueryHandler
 	BrokerAccountClientFactory    broker.AccountClientFactory
 	BrokerOnBoardingClientFactory broker.OnBoardingClientFactory
-	AuthMiddleware                *auth.Middleware
 	BackendRedirectURI            string
 	FrontendBaseURL               string
 }
 
-func NewRouter(input NewRouterInput) *mux.Router {
-	handler := &Handler{
+func NewHandler(input NewHandlerInput) http.Handler {
+	api := &API{
 		oauthStateStore:               input.OAuthStateStore,
 		pendingSelectionStore:         input.PendingSelectionStore,
 		accountStoreCommandHandler:    input.AccountStoreCommandHandler,
@@ -51,39 +36,16 @@ func NewRouter(input NewRouterInput) *mux.Router {
 		frontendBaseURL:               input.FrontendBaseURL,
 	}
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/accounts/v1/authorization_callback", handler.HandleAuthorizationCallback).Methods(http.MethodGet).Name("HandleAuthorizationCallback")
-
-	accountV1Router := router.PathPrefix("/accounts/v1").Subrouter()
-	accountV1Router.Use(input.AuthMiddleware.Handle)
-	accountV1Router.HandleFunc("/accounts", handler.CreateAccount).Methods(http.MethodPost).Name("CreateAccount")
-	accountV1Router.HandleFunc("/accounts", handler.ListAccounts).Methods(http.MethodGet).Name("ListAccounts")
-	accountV1Router.HandleFunc("/accounts/{account_id}", handler.GetAccount).Methods(http.MethodGet).Name("GetAccount")
-	accountV1Router.HandleFunc("/accounts/{account_id}/balances", handler.GetAccountBalance).Methods(http.MethodGet).Name("GetAccountBalance")
-	accountV1Router.HandleFunc("/accounts/{account_id}/pnl/daily", handler.GetDailyPnL).Methods(http.MethodGet).Name("GetDailyPnL")
-
-	accountV1Router.HandleFunc("/accounts/{account_id}/brokers", handler.StartBrokerSelection).Methods(http.MethodPost).Name("StartBrokerSelection")
-	accountV1Router.HandleFunc("/accounts/{account_id}/brokers", handler.GetPendingBrokerSelection).Methods(http.MethodGet).Name("GetPendingBrokerSelection")
-	accountV1Router.HandleFunc("/accounts/{account_id}/brokers", handler.CompleteBrokerSelection).Methods(http.MethodPut).Name("CompleteBrokerSelection")
-	return router
-}
-
-func GenerateStateToken() (string, error) {
-	b := make([]byte, 32)
-	if _, err := rand.Read(b); err != nil {
-		return "", err
-	}
-	return base64.RawURLEncoding.EncodeToString(b), nil
-}
-
-func checkBrokerLinked(account *accountstore.Account) error {
-	if !account.BrokerLinked {
-		return merry.UserError("account is not linked to a broker").WithHTTPCode(http.StatusBadRequest)
-	}
-	return nil
-}
-
-var merrifiedSentinels = httpx.MerrifiedSentinels{
-	{Sentinel: accountstore.ErrAccountNotFound, StatusCode: http.StatusNotFound, UserMessage: "account not found"},
-	{Sentinel: accountstore.ErrAccountForbidden, StatusCode: http.StatusForbidden, UserMessage: "forbidden"},
-	{Sentinel: accountstore.ErrBrokerAccountAlreadyLinked, StatusCode: http.StatusConflict, UserMessage: "broker already linked"},
+	router.HandleFunc("/accounts/v1/authorization_callback", api.HandleAuthorizationCallback).Methods(http.MethodGet).Name("HandleAuthorizationCallback")
+	publicRouter := router.PathPrefix("/accounts/v1").Subrouter()
+	publicRouter.Use(input.AuthMiddleware.Handle)
+	publicRouter.HandleFunc("/accounts", api.CreateAccount).Methods(http.MethodPost).Name("CreateAccount")
+	publicRouter.HandleFunc("/accounts", api.ListAccounts).Methods(http.MethodGet).Name("ListAccounts")
+	publicRouter.HandleFunc("/accounts/{account_id}", api.GetAccount).Methods(http.MethodGet).Name("GetAccount")
+	publicRouter.HandleFunc("/accounts/{account_id}/balances", api.GetAccountBalance).Methods(http.MethodGet).Name("GetAccountBalance")
+	publicRouter.HandleFunc("/accounts/{account_id}/pnl/daily", api.GetDailyPnL).Methods(http.MethodGet).Name("GetDailyPnL")
+	publicRouter.HandleFunc("/accounts/{account_id}/brokers", api.StartBrokerSelection).Methods(http.MethodPost).Name("StartBrokerSelection")
+	publicRouter.HandleFunc("/accounts/{account_id}/brokers", api.GetPendingBrokerSelection).Methods(http.MethodGet).Name("GetPendingBrokerSelection")
+	publicRouter.HandleFunc("/accounts/{account_id}/brokers", api.CompleteBrokerSelection).Methods(http.MethodPut).Name("CompleteBrokerSelection")
+	return httpx.HandlerWithCORS(router)
 }

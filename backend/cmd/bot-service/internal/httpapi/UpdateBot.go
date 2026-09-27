@@ -15,7 +15,7 @@ type UpdateBotInput struct {
 	Status string `json:"status"`
 }
 
-func (handler *Handler) UpdateBot(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) UpdateBot(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -32,7 +32,7 @@ func (handler *Handler) UpdateBot(responseWriter http.ResponseWriter, request *h
 	status := botstore.BotStatus(body.Status)
 	switch status {
 	case botstore.BotStatusRunning:
-		err = handler.ensureAllocationPolicy(ctx, request, botID)
+		err = api.ensureAllocationPolicy(ctx, request, botID)
 		if err != nil {
 			return
 		}
@@ -41,23 +41,22 @@ func (handler *Handler) UpdateBot(responseWriter http.ResponseWriter, request *h
 		err = merry.UserError(`status must be "running" or "stopped"`).WithHTTPCode(http.StatusBadRequest)
 		return
 	}
-	err = handler.botStoreCommandHandler.UpdateBotStatus(ctx, botID, status)
+	err = api.botStoreCommandHandler.UpdateBotStatus(ctx, botID, status)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.WriteHeader(http.StatusOK)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, nil)
 }
 
-func (handler *Handler) ensureAllocationPolicy(ctx context.Context, request *http.Request, botID string) (err error) {
-	bot, err := handler.botStoreQueryHandler.Get(ctx, botID)
+func (api *API) ensureAllocationPolicy(ctx context.Context, request *http.Request, botID string) (err error) {
+	bot, err := api.botStoreQueryHandler.Get(ctx, botID)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	ctx = ContextWithAccessTokenFromRequestHeader(ctx, request)
-	balance, err := handler.accountServiceClient.GetAccountBalance(ctx, bot.AccountID)
+	balance, err := api.accountServiceClient.GetAccountBalance(ctx, bot.AccountID)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
@@ -66,7 +65,7 @@ func (handler *Handler) ensureAllocationPolicy(ctx context.Context, request *htt
 		err = merry.UserError("account has no available cash balance").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
-	bots, err := handler.botStoreQueryHandler.List(ctx)
+	bots, err := api.botStoreQueryHandler.List(ctx)
 	fatal.OnError(err)
 	activeAllocationPercent := 0.0
 	for _, botItem := range bots {

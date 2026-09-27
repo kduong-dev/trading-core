@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -14,7 +13,7 @@ import (
 const defaultPageSize = 10
 const maxPageSize = 100
 
-func (handler *Handler) ListJobs(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) ListJobs(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -43,15 +42,14 @@ func (handler *Handler) ListJobs(responseWriter http.ResponseWriter, request *ht
 		return
 	}
 
-	result, err := handler.jobQueryHandler.List(ctx, jobstore.ListInput{
+	result, err := api.jobQueryHandler.List(ctx, jobstore.ListInput{
 		Page:     page,
 		PageSize: pageSize,
 	})
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(responseWriter).Encode(result)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, result)
 }
 
 func parseQueryInt(request *http.Request, key string, defaultValue int) (int, error) {

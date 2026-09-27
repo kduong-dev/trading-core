@@ -1,13 +1,11 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/pnlaggregator"
@@ -29,7 +27,7 @@ type GetDailyPnLResponse struct {
 	Summary  pnlaggregator.Summary    `json:"summary"`
 }
 
-func (handler *Handler) GetDailyPnL(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) GetDailyPnL(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -65,7 +63,7 @@ func (handler *Handler) GetDailyPnL(responseWriter http.ResponseWriter, request 
 		return
 	}
 
-	account, err := handler.accountStoreQueryHandler.Get(ctx, accountstore.GetInput{
+	account, err := api.accountStoreQueryHandler.Get(ctx, accountstore.GetInput{
 		AccountID: accountID,
 	})
 	if err != nil {
@@ -76,7 +74,7 @@ func (handler *Handler) GetDailyPnL(responseWriter http.ResponseWriter, request 
 	if err != nil {
 		return
 	}
-	accountClient := handler.brokerAccountClientFactory.Get(ctx, account.BrokerAccount)
+	accountClient := api.brokerAccountClientFactory.Get(ctx, account.BrokerAccount)
 	matchingFrom := fromDate.AddDate(0, 0, -dailyPnLMatchingLookbackDays).Format(dailyPnLDateLayout)
 	transactionsOutput, err := accountClient.GetTransactions(ctx, broker.GetTransactionsInput{
 		From: matchingFrom,
@@ -102,7 +100,5 @@ func (handler *Handler) GetDailyPnL(responseWriter http.ResponseWriter, request 
 		Days:     aggregated.Days,
 		Summary:  summary,
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(response)
-	fatal.OnErrorUnlessDone(ctx, err)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, response)
 }

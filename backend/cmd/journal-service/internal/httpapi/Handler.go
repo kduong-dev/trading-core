@@ -9,33 +9,23 @@ import (
 	"github.com/kduong-dev/trading-core/backend/internal/auth"
 )
 
-type Handler struct {
-	entryCommandHandler entrystore.CommandHandler
-	entryQueryHandler   entrystore.QueryHandler
-}
-
-type NewRouterInput struct {
+type NewHandlerInput struct {
 	AuthMiddleware      *auth.Middleware
 	EntryCommandHandler entrystore.CommandHandler
 	EntryQueryHandler   entrystore.QueryHandler
 }
 
-func NewRouter(input NewRouterInput) *mux.Router {
-	handler := &Handler{
+func NewHandler(input NewHandlerInput) http.Handler {
+	api := &API{
 		entryCommandHandler: input.EntryCommandHandler,
 		entryQueryHandler:   input.EntryQueryHandler,
 	}
 	router := mux.NewRouter().StrictSlash(true)
-	journalV1Router := router.PathPrefix("/journal/v1").Subrouter()
-	journalV1Router.Use(input.AuthMiddleware.Handle)
-	journalV1Router.HandleFunc("/entries", handler.ListEntries).Methods(http.MethodGet).Name("ListEntries")
-	journalV1Router.HandleFunc("/entries/{date}", handler.GetEntry).Methods(http.MethodGet).Name("GetEntry")
-	journalV1Router.HandleFunc("/entries/{date}", handler.UpsertEntry).Methods(http.MethodPut).Name("UpsertEntry")
-	journalV1Router.HandleFunc("/entries/{date}", handler.DeleteEntry).Methods(http.MethodDelete).Name("DeleteEntry")
-	return router
-}
-
-var merrifiedSentinels = httpx.MerrifiedSentinels{
-	{Sentinel: entrystore.ErrEntryNotFound, StatusCode: http.StatusNotFound, UserMessage: "entry not found"},
-	{Sentinel: entrystore.ErrEntryForbidden, StatusCode: http.StatusForbidden, UserMessage: "forbidden"},
+	publicRouter := router.PathPrefix("/journal/v1").Subrouter()
+	publicRouter.Use(input.AuthMiddleware.Handle)
+	publicRouter.HandleFunc("/entries", api.ListEntries).Methods(http.MethodGet).Name("ListEntries")
+	publicRouter.HandleFunc("/entries/{date}", api.GetEntry).Methods(http.MethodGet).Name("GetEntry")
+	publicRouter.HandleFunc("/entries/{date}", api.UpsertEntry).Methods(http.MethodPut).Name("UpsertEntry")
+	publicRouter.HandleFunc("/entries/{date}", api.DeleteEntry).Methods(http.MethodDelete).Name("DeleteEntry")
+	return httpx.HandlerWithCORS(router)
 }

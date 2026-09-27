@@ -1,14 +1,12 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 )
 
-func (handler *Handler) GetFearGreedIndex(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) GetFearGreedIndex(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -16,11 +14,9 @@ func (handler *Handler) GetFearGreedIndex(responseWriter http.ResponseWriter, re
 		}
 	}()
 	ctx := request.Context()
-	output, err := handler.fetchSentimentStrategy.GetFearGreedIndex(ctx)
+	output, err := api.fetchSentimentStrategy.GetFearGreedIndex(ctx)
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(output)
-	fatal.OnErrorUnlessDone(ctx, err)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, output)
 }

@@ -14,7 +14,7 @@ import (
 	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botsync"
 )
 
-func (handler *Handler) StreamBotEvents(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) StreamBotEvents(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -24,12 +24,12 @@ func (handler *Handler) StreamBotEvents(responseWriter http.ResponseWriter, requ
 	ctx := request.Context()
 	vars := mux.Vars(request)
 	botID := vars["bot_id"]
-	_, err = handler.botStoreQueryHandler.Get(ctx, botID)
+	_, err = api.botStoreQueryHandler.Get(ctx, botID)
 	if err != nil {
 		return
 	}
-	channel := handler.botChannelFunc(botID)
-	log, err := handler.botEventLogFactory.Create(channel)
+	channel := api.botChannelFunc(botID)
+	log, err := api.botEventLogFactory.Create(channel)
 	fatal.OnError(err)
 	flusher, ok := responseWriter.(http.Flusher)
 	fatal.Unless(ok, "streaming not supported")

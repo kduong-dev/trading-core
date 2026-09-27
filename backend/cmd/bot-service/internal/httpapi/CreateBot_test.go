@@ -89,7 +89,7 @@ func TestCreateBotInputValidate(t *testing.T) {
 func TestCreateBot_RejectsSymbolNotTradableForBroker(t *testing.T) {
 	Convey("Given a broker-linked account and non-tradable symbol", t, func() {
 		commandHandler := &fakeBotStoreCommandHandler{}
-		handler := &Handler{
+		api := &API{
 			accountServiceClient: fakeAccountServiceClient{
 				account: &accountservice.Account{
 					ID:           "acct-1",
@@ -111,7 +111,7 @@ func TestCreateBot_RejectsSymbolNotTradableForBroker(t *testing.T) {
 		recorder := httptest.NewRecorder()
 
 		Convey("When creating a bot", func() {
-			handler.CreateBot(recorder, request)
+			api.CreateBot(recorder, request)
 
 			Convey("Then request is rejected and bot is not created", func() {
 				So(recorder.Code, ShouldEqual, http.StatusBadRequest)

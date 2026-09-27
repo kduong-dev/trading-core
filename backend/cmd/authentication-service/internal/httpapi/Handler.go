@@ -2,64 +2,29 @@ package httpapi
 
 import (
 	"net/http"
-	"strings"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
-
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/authentication-service/internal/userstore"
-	"github.com/kduong-dev/trading-core/backend/internal/auth"
-	"github.com/kduong-dev/trading-core/backend/internal/authz"
 )
 
-type Handler struct {
-	userStore   userstore.Store
-	tokenSecret []byte
-	expiryTTL   time.Duration
-}
-
-type NewRouterInput struct {
+type NewHandlerInput struct {
 	UserStore   userstore.Store
 	TokenSecret []byte
 	ExpiryTTL   time.Duration
 }
 
-func NewRouter(input NewRouterInput) *mux.Router {
-	handler := &Handler{
+func NewHandler(input NewHandlerInput) http.Handler {
+	api := &API{
 		userStore:   input.UserStore,
 		tokenSecret: input.TokenSecret,
 		expiryTTL:   input.ExpiryTTL,
 	}
 	router := mux.NewRouter().StrictSlash(true)
-	authV1Router := router.PathPrefix("/auth/v1").Subrouter()
-	authV1Router.HandleFunc("/users", handler.CreateUser).Methods(http.MethodPost).Name("CreateUser")
-	authV1Router.HandleFunc("/sessions", handler.CreateSession).Methods(http.MethodPost).Name("CreateSession")
-	authV1Router.HandleFunc("/sessions/refresh", handler.RefreshSession).Methods(http.MethodPost).Name("RefreshSession")
-	return router
-}
-
-func (handler *Handler) GenerateToken(user *userstore.User) (string, time.Time, error) {
-	now := time.Now().UTC()
-	expiresAt := now.Add(handler.expiryTTL)
-	claims := auth.Claims{
-		Scope: strings.Join(authz.UserScopes, " "),
-		RegisteredClaims: jwt.RegisteredClaims{
-			IssuedAt:  jwt.NewNumericDate(now),
-			ExpiresAt: jwt.NewNumericDate(expiresAt),
-			Subject:   user.ID,
-		},
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signed, err := token.SignedString(handler.tokenSecret)
-	if err != nil {
-		return "", time.Time{}, err
-	}
-	return signed, expiresAt, nil
-}
-
-var merrifiedSentinels = httpx.MerrifiedSentinels{
-	{Sentinel: userstore.ErrNotFound, StatusCode: http.StatusUnauthorized, UserMessage: "invalid credentials"},
-	{Sentinel: userstore.ErrAlreadyExists, StatusCode: http.StatusConflict, UserMessage: "user already exists"},
+	publicRouter := router.PathPrefix("/auth/v1").Subrouter()
+	publicRouter.HandleFunc("/users", api.CreateUser).Methods(http.MethodPost).Name("CreateUser")
+	publicRouter.HandleFunc("/sessions", api.CreateSession).Methods(http.MethodPost).Name("CreateSession")
+	publicRouter.HandleFunc("/sessions/refresh", api.RefreshSession).Methods(http.MethodPost).Name("RefreshSession")
+	return httpx.HandlerWithCORS(router)
 }

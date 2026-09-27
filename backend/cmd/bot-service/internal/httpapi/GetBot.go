@@ -1,14 +1,13 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/kduong-dev/goutil/httpx"
 )
 
-func (handler *Handler) GetBot(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) GetBot(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -18,10 +17,9 @@ func (handler *Handler) GetBot(responseWriter http.ResponseWriter, request *http
 	ctx := request.Context()
 	vars := mux.Vars(request)
 	botID := vars["bot_id"]
-	bot, err := handler.botStoreQueryHandler.Get(ctx, botID)
+	bot, err := api.botStoreQueryHandler.Get(ctx, botID)
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(responseWriter).Encode(bot)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, bot)
 }

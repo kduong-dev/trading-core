@@ -1,16 +1,14 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/kduong-dev/goutil/fatal"
 	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/account-service/internal/accountstore"
 )
 
-func (handler *Handler) GetAccountBalance(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) GetAccountBalance(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -20,7 +18,7 @@ func (handler *Handler) GetAccountBalance(responseWriter http.ResponseWriter, re
 	ctx := request.Context()
 	vars := mux.Vars(request)
 	accountID := vars["account_id"]
-	account, err := handler.accountStoreQueryHandler.Get(ctx, accountstore.GetInput{
+	account, err := api.accountStoreQueryHandler.Get(ctx, accountstore.GetInput{
 		AccountID: accountID,
 	})
 	if err != nil {
@@ -31,12 +29,10 @@ func (handler *Handler) GetAccountBalance(responseWriter http.ResponseWriter, re
 	if err != nil {
 		return
 	}
-	accountClient := handler.brokerAccountClientFactory.Get(ctx, account.BrokerAccount)
+	accountClient := api.brokerAccountClientFactory.Get(ctx, account.BrokerAccount)
 	output, err := accountClient.GetBalance(ctx)
 	if err != nil {
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(output)
-	fatal.OnErrorUnlessDone(ctx, err)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, output)
 }

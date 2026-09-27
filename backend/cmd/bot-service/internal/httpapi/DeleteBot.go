@@ -7,7 +7,7 @@ import (
 	"github.com/kduong-dev/goutil/httpx"
 )
 
-func (handler *Handler) DeleteBot(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) DeleteBot(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -17,11 +17,10 @@ func (handler *Handler) DeleteBot(responseWriter http.ResponseWriter, request *h
 	ctx := request.Context()
 	vars := mux.Vars(request)
 	botID := vars["bot_id"]
-	err = handler.botStoreCommandHandler.Delete(ctx, botID)
+	err = api.botStoreCommandHandler.Delete(ctx, botID)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.WriteHeader(http.StatusOK)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, nil)
 }

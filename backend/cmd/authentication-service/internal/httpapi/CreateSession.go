@@ -1,7 +1,6 @@
 package httpapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
 	"time"
@@ -25,7 +24,7 @@ type CreateSessionOutput struct {
 	Email       string `json:"email"`
 }
 
-func (handler *Handler) CreateSession(responseWriter http.ResponseWriter, request *http.Request) {
+func (api *API) CreateSession(responseWriter http.ResponseWriter, request *http.Request) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -42,7 +41,7 @@ func (handler *Handler) CreateSession(responseWriter http.ResponseWriter, reques
 		err = merry.UserError("email and password are required").WithHTTPCode(http.StatusBadRequest)
 		return
 	}
-	object, err := handler.userStore.GetByEmail(ctx, input.Email)
+	object, err := api.userStore.GetByEmail(ctx, input.Email)
 	if err != nil {
 		err = merrifiedSentinels.Merrify(err)
 		return
@@ -52,7 +51,7 @@ func (handler *Handler) CreateSession(responseWriter http.ResponseWriter, reques
 		err = merry.New("invalid password").WithHTTPCode(http.StatusUnauthorized).WithUserMessage("invalid credentials")
 		return
 	}
-	token, expiresAt, err := handler.GenerateToken(object)
+	token, expiresAt, err := api.GenerateToken(object)
 	fatal.OnError(err)
 	output := CreateSessionOutput{
 		AccessToken: token,
@@ -61,9 +60,7 @@ func (handler *Handler) CreateSession(responseWriter http.ResponseWriter, reques
 		UserID:      object.ID,
 		Email:       object.Email,
 	}
-	responseWriter.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(responseWriter).Encode(&output)
-	fatal.OnErrorUnlessDone(ctx, err)
+	httpx.SendJSONResponse(responseWriter, http.StatusOK, output)
 }
 
 func VerifyPassword(password string, hash string) bool {
