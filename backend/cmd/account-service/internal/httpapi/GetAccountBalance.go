@@ -21,8 +21,7 @@ func (api *API) GetAccountBalance(responseWriter http.ResponseWriter, request *h
 	account, err := api.accountStoreQueryHandler.Get(ctx, accountstore.GetInput{
 		AccountID: accountID,
 	})
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	err = checkBrokerLinked(account)

@@ -29,8 +29,7 @@ func (api *API) DeleteEntry(responseWriter http.ResponseWriter, request *http.Re
 		Date:      date,
 		UpdatedAt: now,
 	})
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	responseWriter.WriteHeader(http.StatusNoContent)

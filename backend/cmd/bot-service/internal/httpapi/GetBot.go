@@ -18,7 +18,7 @@ func (api *API) GetBot(responseWriter http.ResponseWriter, request *http.Request
 	vars := mux.Vars(request)
 	botID := vars["bot_id"]
 	bot, err := api.botStoreQueryHandler.Get(ctx, botID)
-	if err != nil {
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, bot)

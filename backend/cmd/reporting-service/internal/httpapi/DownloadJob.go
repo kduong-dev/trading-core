@@ -28,8 +28,7 @@ func (api *API) DownloadJob(responseWriter http.ResponseWriter, request *http.Re
 	vars := mux.Vars(request)
 	jobID := vars["job_id"]
 	job, err := api.jobQueryHandler.Get(ctx, jobID)
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	if job.Status != jobstore.JobStatusCompleted {

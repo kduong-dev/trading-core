@@ -61,8 +61,7 @@ func (api *API) CompleteBrokerSelection(responseWriter http.ResponseWriter, requ
 		AccountID:     entry.AccountID,
 		BrokerAccount: brokerAccount,
 	})
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	api.pendingSelectionStore.Delete(input.PendingToken)

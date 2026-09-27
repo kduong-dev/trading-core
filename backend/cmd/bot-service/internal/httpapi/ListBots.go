@@ -15,7 +15,7 @@ func (api *API) ListBots(responseWriter http.ResponseWriter, request *http.Reque
 	}()
 	ctx := request.Context()
 	bots, err := api.botStoreQueryHandler.List(ctx)
-	if err != nil {
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, bots)

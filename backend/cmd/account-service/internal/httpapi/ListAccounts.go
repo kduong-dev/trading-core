@@ -15,7 +15,7 @@ func (api *API) ListAccounts(responseWriter http.ResponseWriter, request *http.R
 	}()
 	ctx := request.Context()
 	accounts, err := api.accountStoreQueryHandler.List(ctx)
-	if err != nil {
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, accounts)

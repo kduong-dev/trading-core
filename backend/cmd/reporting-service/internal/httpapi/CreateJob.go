@@ -57,7 +57,7 @@ func (api *API) CreateJob(responseWriter http.ResponseWriter, request *http.Requ
 		UpdatedAt:  now,
 	}
 	err = api.jobCommandHandler.CreateJob(ctx, job)
-	if err != nil {
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	// Notify the actor non-blocking; the actor's channel is buffered and the

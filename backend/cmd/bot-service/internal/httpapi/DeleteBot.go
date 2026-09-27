@@ -18,8 +18,7 @@ func (api *API) DeleteBot(responseWriter http.ResponseWriter, request *http.Requ
 	vars := mux.Vars(request)
 	botID := vars["bot_id"]
 	err = api.botStoreCommandHandler.Delete(ctx, botID)
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, nil)

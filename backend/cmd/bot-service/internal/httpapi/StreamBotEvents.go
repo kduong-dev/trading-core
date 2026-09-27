@@ -25,7 +25,7 @@ func (api *API) StreamBotEvents(responseWriter http.ResponseWriter, request *htt
 	vars := mux.Vars(request)
 	botID := vars["bot_id"]
 	_, err = api.botStoreQueryHandler.Get(ctx, botID)
-	if err != nil {
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	channel := api.botChannelFunc(botID)

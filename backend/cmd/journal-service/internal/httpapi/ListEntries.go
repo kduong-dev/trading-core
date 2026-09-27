@@ -60,7 +60,7 @@ func (api *API) ListEntries(responseWriter http.ResponseWriter, request *http.Re
 		Page:     page,
 		PageSize: pageSize,
 	})
-	if err != nil {
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, result)

@@ -101,7 +101,7 @@ func (api *API) CreateBot(responseWriter http.ResponseWriter, request *http.Requ
 		CreatedAt:         time.Now().UTC().Format(time.RFC3339),
 	}
 	err = api.botStoreCommandHandler.Create(ctx, bot)
-	if err != nil {
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusCreated, bot)

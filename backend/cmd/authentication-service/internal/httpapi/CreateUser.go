@@ -70,8 +70,7 @@ func (api *API) CreateUser(responseWriter http.ResponseWriter, request *http.Req
 		CreatedAt:    time.Now().UTC(),
 	}
 	err = api.userStore.Put(ctx, object)
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	output := CreateUserOutput{

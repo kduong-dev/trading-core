@@ -24,8 +24,7 @@ func (api *API) GetEntry(responseWriter http.ResponseWriter, request *http.Reque
 		return
 	}
 	entry, err := api.entryQueryHandler.Get(ctx, date)
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, entry)

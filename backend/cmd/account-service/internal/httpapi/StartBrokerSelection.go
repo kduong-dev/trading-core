@@ -43,8 +43,7 @@ func (api *API) StartBrokerSelection(responseWriter http.ResponseWriter, request
 	_, err = api.accountStoreQueryHandler.Get(ctx, accountstore.GetInput{
 		AccountID: accountID,
 	})
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	stateToken, err := GenerateStateToken()

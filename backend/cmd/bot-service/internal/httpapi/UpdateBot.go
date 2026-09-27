@@ -42,8 +42,7 @@ func (api *API) UpdateBot(responseWriter http.ResponseWriter, request *http.Requ
 		return
 	}
 	err = api.botStoreCommandHandler.UpdateBotStatus(ctx, botID, status)
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, nil)
@@ -51,8 +50,7 @@ func (api *API) UpdateBot(responseWriter http.ResponseWriter, request *http.Requ
 
 func (api *API) ensureAllocationPolicy(ctx context.Context, request *http.Request, botID string) (err error) {
 	bot, err := api.botStoreQueryHandler.Get(ctx, botID)
-	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	ctx = ContextWithAccessTokenFromRequestHeader(ctx, request)

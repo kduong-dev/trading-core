@@ -46,7 +46,7 @@ func (api *API) ListJobs(responseWriter http.ResponseWriter, request *http.Reque
 		Page:     page,
 		PageSize: pageSize,
 	})
-	if err != nil {
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, result)
