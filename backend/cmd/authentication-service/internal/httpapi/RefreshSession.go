@@ -43,8 +43,7 @@ func (api *API) RefreshSession(responseWriter http.ResponseWriter, request *http
 	}
 	userID := claims.Subject
 	object, err := api.userStore.GetByID(ctx, userID)
-	if err != nil {
-		err = merry.Wrap(err).WithHTTPCode(http.StatusUnauthorized).WithUserMessage("unauthorized")
+	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
 		return
 	}
 	token, expiresAt, err := api.GenerateToken(object)
