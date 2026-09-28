@@ -36,7 +36,7 @@ func (api *API) CreateUser(responseWriter http.ResponseWriter, request *http.Req
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
@@ -70,7 +70,7 @@ func (api *API) CreateUser(responseWriter http.ResponseWriter, request *http.Req
 		CreatedAt:    time.Now().UTC(),
 	}
 	err = api.userStore.Put(ctx, object)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	output := CreateUserOutput{

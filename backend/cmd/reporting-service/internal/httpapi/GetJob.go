@@ -12,7 +12,7 @@ func (api *API) GetJob(responseWriter http.ResponseWriter, request *http.Request
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
@@ -22,7 +22,7 @@ func (api *API) GetJob(responseWriter http.ResponseWriter, request *http.Request
 	vars := mux.Vars(request)
 	jobID := vars["job_id"]
 	job, err := api.jobQueryHandler.Get(ctx, jobID)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, job)

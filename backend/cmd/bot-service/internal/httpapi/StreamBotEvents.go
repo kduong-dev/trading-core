@@ -2,7 +2,6 @@ package httpapi
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -10,7 +9,6 @@ import (
 	"github.com/kduong-dev/goutil/eventsource"
 	"github.com/kduong-dev/goutil/eventsource/subscription"
 	"github.com/kduong-dev/goutil/fatal"
-	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/bot-service/internal/botsync"
 )
 
@@ -18,14 +16,14 @@ func (api *API) StreamBotEvents(responseWriter http.ResponseWriter, request *htt
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
 	vars := mux.Vars(request)
 	botID := vars["bot_id"]
 	_, err = api.botStoreQueryHandler.Get(ctx, botID)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	channel := api.botChannelFunc(botID)
@@ -37,15 +35,14 @@ func (api *API) StreamBotEvents(responseWriter http.ResponseWriter, request *htt
 	responseWriter.Header().Set("Cache-Control", "no-cache")
 	responseWriter.Header().Set("Connection", "keep-alive")
 	responseWriter.Header().Set("X-Accel-Buffering", "no")
-	_, err = subscription.Live(ctx, subscription.Input{
+	// Live only returns once the client disconnects, which ends every stream,
+	// so its error is expected and there is nothing left to send.
+	_, _ = subscription.Live(ctx, subscription.Input{
 		Log:    log,
 		Cursor: 0,
 		Apply: func(ctx context.Context, event *eventsource.Event) error {
 			var frame botsync.EventFrame
-			err := json.Unmarshal(event.Data, &frame)
-			if err != nil {
-				return err
-			}
+			fatal.UnlessUnmarshal(event.Data, &frame)
 			if frame.Type != botsync.EventTypeBotDecisionRecorded {
 				return nil
 			}
@@ -56,5 +53,4 @@ func (api *API) StreamBotEvents(responseWriter http.ResponseWriter, request *htt
 			return nil
 		},
 	})
-	fatal.OnError(err)
 }

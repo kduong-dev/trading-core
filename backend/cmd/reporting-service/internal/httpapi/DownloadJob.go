@@ -7,7 +7,6 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
-	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/storage-service/pkg/storageservice"
 	"github.com/kduong-dev/trading-core/backend/cmd/reporting-service/internal/jobstore"
 	"github.com/kduong-dev/trading-core/backend/internal/authz"
@@ -17,7 +16,7 @@ func (api *API) DownloadJob(responseWriter http.ResponseWriter, request *http.Re
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
@@ -27,7 +26,7 @@ func (api *API) DownloadJob(responseWriter http.ResponseWriter, request *http.Re
 	vars := mux.Vars(request)
 	jobID := vars["job_id"]
 	job, err := api.jobQueryHandler.Get(ctx, jobID)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	if job.Status != jobstore.JobStatusCompleted {

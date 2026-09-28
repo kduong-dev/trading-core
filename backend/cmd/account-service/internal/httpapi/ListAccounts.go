@@ -10,12 +10,12 @@ func (api *API) ListAccounts(responseWriter http.ResponseWriter, request *http.R
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
 	accounts, err := api.accountStoreQueryHandler.List(ctx)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, accounts)

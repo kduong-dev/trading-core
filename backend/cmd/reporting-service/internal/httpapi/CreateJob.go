@@ -29,7 +29,7 @@ func (api *API) CreateJob(responseWriter http.ResponseWriter, request *http.Requ
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
@@ -57,7 +57,7 @@ func (api *API) CreateJob(responseWriter http.ResponseWriter, request *http.Requ
 		UpdatedAt:  now,
 	}
 	err = api.jobCommandHandler.CreateJob(ctx, job)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	// Notify the actor non-blocking; the actor's channel is buffered and the

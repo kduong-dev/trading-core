@@ -31,7 +31,7 @@ func (api *API) UpsertEntry(responseWriter http.ResponseWriter, request *http.Re
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
@@ -61,7 +61,7 @@ func (api *API) UpsertEntry(responseWriter http.ResponseWriter, request *http.Re
 		UpdatedAt:         now,
 	}
 	err = api.entryCommandHandler.UpsertEntry(ctx, entry)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusAccepted, entry)

@@ -6,7 +6,6 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/gorilla/mux"
-	"github.com/kduong-dev/goutil/httpx"
 	"github.com/kduong-dev/trading-core/backend/cmd/journal-service/internal/entrystore"
 )
 
@@ -14,7 +13,7 @@ func (api *API) DeleteEntry(responseWriter http.ResponseWriter, request *http.Re
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
@@ -29,7 +28,7 @@ func (api *API) DeleteEntry(responseWriter http.ResponseWriter, request *http.Re
 		Date:      date,
 		UpdatedAt: now,
 	})
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	responseWriter.WriteHeader(http.StatusNoContent)

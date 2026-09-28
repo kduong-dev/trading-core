@@ -28,7 +28,7 @@ func (api *API) CreateSession(responseWriter http.ResponseWriter, request *http.
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
@@ -42,7 +42,7 @@ func (api *API) CreateSession(responseWriter http.ResponseWriter, request *http.
 		return
 	}
 	object, err := api.userStore.GetByEmail(ctx, input.Email)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	isPasswordValid := VerifyPassword(input.Password, object.PasswordHash)

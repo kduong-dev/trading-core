@@ -11,14 +11,14 @@ func (api *API) DeleteBot(responseWriter http.ResponseWriter, request *http.Requ
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
 	vars := mux.Vars(request)
 	botID := vars["bot_id"]
 	err = api.botStoreCommandHandler.Delete(ctx, botID)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, nil)

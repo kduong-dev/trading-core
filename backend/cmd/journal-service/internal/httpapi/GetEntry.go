@@ -13,7 +13,7 @@ func (api *API) GetEntry(responseWriter http.ResponseWriter, request *http.Reque
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
@@ -24,7 +24,7 @@ func (api *API) GetEntry(responseWriter http.ResponseWriter, request *http.Reque
 		return
 	}
 	entry, err := api.entryQueryHandler.Get(ctx, date)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusOK, entry)

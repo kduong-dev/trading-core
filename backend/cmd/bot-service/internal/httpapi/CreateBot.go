@@ -49,7 +49,7 @@ func (api *API) CreateBot(responseWriter http.ResponseWriter, request *http.Requ
 	var err error
 	defer func() {
 		if err != nil {
-			httpx.SendErrorResponse(responseWriter, err)
+			merrifiedSentinels.SendErrorResponse(responseWriter, err)
 		}
 	}()
 	ctx := request.Context()
@@ -65,7 +65,6 @@ func (api *API) CreateBot(responseWriter http.ResponseWriter, request *http.Requ
 	ctx = ContextWithAccessTokenFromRequestHeader(ctx, request)
 	account, err := api.accountServiceClient.GetAccount(ctx, input.AccountID)
 	if err != nil {
-		err = merrifiedSentinels.Merrify(err)
 		return
 	}
 	if !account.BrokerLinked {
@@ -101,7 +100,7 @@ func (api *API) CreateBot(responseWriter http.ResponseWriter, request *http.Requ
 		CreatedAt:         time.Now().UTC().Format(time.RFC3339),
 	}
 	err = api.botStoreCommandHandler.Create(ctx, bot)
-	if err = merrifiedSentinels.MerrifyOrFatal(err); err != nil {
+	if err != nil {
 		return
 	}
 	httpx.SendJSONResponse(responseWriter, http.StatusCreated, bot)
